@@ -26,7 +26,7 @@ printVersion(){
 Molotov 0.5.2
 
 Copyright (C) Cézar Augusto de Campos
-License: MIT <https://github.com/cizordj/molotov>
+License: MIT
 EOF
 exit 0
 }
@@ -75,15 +75,19 @@ checkVariables(){
     if [ -z "$ISO_IMAGE" ] || [ -z "$TARGET_DEVICE" ]; then
         printf '%s\n' "Missing arguments..."
         exit 2
-    fi
-    if [ -e "$ISO_IMAGE" ] || [ -e "$TARGET_DEVICE" ]; then
+    elif [ ! -e "$ISO_IMAGE" ] || [ ! -e "$TARGET_DEVICE" ]; then
         printf '%s\n' "Iso image does not exist or device not found..."
         exit 2
     fi
 }
 
-formatTargetDevice(){
+umountDevice(){
+    umount -q "$ISO_IMAGE"
     umount -q "$TARGET_DEVICE"*
+    rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
+}
+
+formatTargetDevice(){
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: dos
 device: $TARGET_DEVICE
@@ -132,14 +136,10 @@ EOF
     generate_config > "$BOOT_DIRECTORY/syslinux.cfg"
 }
 
-umountDevice(){
-    umount "$ISO_IMAGE"
-    umount "$TARGET_PARTITION"
-    rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
-}
 handleArguments "$@"
 checkSuperUser
 checkVariables
+umountDevice
 formatTargetDevice
 mountDevice
 dumpImageToDevice
