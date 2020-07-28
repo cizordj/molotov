@@ -1,0 +1,147 @@
+#!/bin/sh
+printHelp(){
+    cat << EOF
+Create a bootable media from a Windows® 10 iso image
+Usage:
+  $(basename "$0") -i <iso-image> -d <device> [OPTIONS]
+
+  -i, --iso-image FILE      iso image to be used in the media creation
+  -d, --device              device where the image must be burnt
+
+  Optional parameters:
+
+  -h, --help                display a help message like this
+
+Mandatory or optional arguments to long options are also mandatory 
+or optional for any corresponding short options.
+
+Report bugs to <github.com/cizordj>
+
+EOF
+exit 0
+}
+
+printVersion(){
+    cat << EOF
+Molotov 0.5.2
+
+Copyright (C) Cézar Augusto de Campos
+License: MIT <https://github.com/cizordj/molotov>
+EOF
+exit 0
+}
+
+handleArguments(){
+    test ! $# -gt 0
+    THERE_IS_NO_ARGUMENT=$?
+
+    while true
+    do
+        if [ $THERE_IS_NO_ARGUMENT -eq 0 ]; then
+            printHelp
+        elif [ "$1" = "-h" ] || [ "$1" = "help" ] || [ "$1" = "--help" ]; then
+            printHelp
+        elif [ "$1" = "-i" ] || [ "$1" = "iso-image" ] || [ "$1" = "--iso-image" ]; then
+            shift 1
+            ISO_IMAGE="$1"
+        elif [ "$1" = "-d" ] || [ "$1" = "device" ] || [ "$1" = "--device" ]; then
+            shift 1
+            TARGET_DEVICE="$1"
+        elif [ "$1" = "-V" ] || [ "$1" = "version" ] || [ "$1" = "--version" ]; then
+            printVersion
+        elif [ $# -gt 0 ]; then
+            printf '%s\n' "Unkown option: $1"
+            exit 2
+        else
+            break
+        fi
+        shift 1
+    done
+}
+
+checkSuperUser(){
+    if [ "$(id -u)" -ne 0 ]; then
+        printf '%s\n' "Insufficient permissions..."
+        exit 2
+    fi
+}
+
+checkVariables(){
+    DEVICE_MOUNTPOINT="/tmp/DEVICE_MOUNTPOINT"
+    DISK_LABEL="WINDOWS10"
+    ISO_MOUNTPOINT="/tmp/ISO_IMAGE"
+    PARTITION_NUMBER=1
+    TARGET_PARTITION="$TARGET_DEVICE$PARTITION_NUMBER"
+    if [ -z "$ISO_IMAGE" ] || [ -z "$TARGET_DEVICE" ]; then
+        printf '%s\n' "Missing arguments..."
+        exit 2
+    fi
+    if [ -e "$ISO_IMAGE" ] || [ -e "$TARGET_DEVICE" ]; then
+        printf '%s\n' "Iso image does not exist or device not found..."
+        exit 2
+    fi
+}
+
+formatTargetDevice(){
+    umount -q "$TARGET_DEVICE"*
+    sfdisk -q "$TARGET_DEVICE" << EOF
+label: dos
+device: $TARGET_DEVICE
+unit: sectors
+sector-size: 512
+$TARGET_PARTITION : start= 2048, type=7, bootable
+EOF
+    mkfs.ntfs -L "$DISK_LABEL" -f -q "$TARGET_PARTITION"
+}
+
+mountDevice(){ 
+    mkdir -p "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
+    mount "$ISO_IMAGE" "$ISO_MOUNTPOINT"
+    mount "$TARGET_PARTITION" "$DEVICE_MOUNTPOINT"
+}
+
+dumpImageToDevice(){
+    rsync --recursive "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
+}
+
+makeDeviceBootable(){
+    generate_config(){
+        cat << EOF
+DEFAULT windows
+SAY Initializing Windows, this might take a while
+LABEL windows
+  COM32 /boot/syslinux/chain.c32
+  APPEND fs ntldr=/bootmgr
+EOF
+    }
+    
+    find_syslinux_modules(){
+        find /usr -name "chain.c32" | grep "/bios/"
+        find /usr -name "libcom32.c32" | grep "/bios/"
+        find /usr -name "libutil.c32" | grep "/bios/"
+        find /usr -name "ldlinux.c32" | grep "/bios/"
+    }
+
+    find_syslinux_mbr(){
+        find /usr -name "mbr.bin" | grep "/syslinux/"
+    }
+    BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot/syslinux"
+    dd bs=440 count=1 conv=notrunc if="$(find_syslinux_mbr)" of="$TARGET_DEVICE"
+    mkdir -p "$BOOT_DIRECTORY"
+    cp "$(find_syslinux_modules)" -t "$BOOT_DIRECTORY"
+    generate_config > "$BOOT_DIRECTORY/syslinux.cfg"
+}
+
+umountDevice(){
+    umount "$ISO_IMAGE"
+    umount "$TARGET_PARTITION"
+    rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
+}
+handleArguments "$@"
+checkSuperUser
+checkVariables
+formatTargetDevice
+mountDevice
+dumpImageToDevice
+makeDeviceBootable
+umountDevice
