@@ -2,7 +2,7 @@
 
 Create a bootable media from a Windows® 10 iso image.
 
-The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. This script contained in this repository is just a backend, sooner or later we'll launch a graphical interface. Only legacy boot is supported by now.
+The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. The script contained in this repository is just a backend, sooner or later we'll launch a graphical interface. Only legacy boot is supported by now.
 
 ## Dependencies
 Debian bullseye
