@@ -69,7 +69,7 @@ checkSuperUser(){
 checkVariables(){
     DEVICE_MOUNTPOINT="/tmp/DEVICE_MOUNTPOINT"
     DISK_LABEL="WINDOWS10"
-    ISO_MOUNTPOINT="/tmp/ISO_IMAGE"
+    ISO_MOUNTPOINT="/tmp/ISO_MOUNTPOINT"
     PARTITION_NUMBER=1
     TARGET_PARTITION="$TARGET_DEVICE$PARTITION_NUMBER"
     if [ -z "$ISO_IMAGE" ] || [ -z "$TARGET_DEVICE" ]; then
@@ -82,9 +82,8 @@ checkVariables(){
 }
 
 umountDevice(){
-    umount -q "$ISO_IMAGE"
-    umount -q "$TARGET_DEVICE"*
-    rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
+    umount -q "$ISO_IMAGE" "$TARGET_DEVICE"*
+    rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT" 2> /dev/null
 }
 
 formatTargetDevice(){
@@ -95,13 +94,13 @@ unit: sectors
 sector-size: 512
 $TARGET_PARTITION : start= 2048, type=7, bootable
 EOF
-    mkfs.ntfs -L "$DISK_LABEL" -f -q "$TARGET_PARTITION"
+    mkfs.ntfs --label "$DISK_LABEL" --fast --quiet "$TARGET_PARTITION"
 }
 
 mountDevice(){ 
     mkdir -p "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
-    mount "$ISO_IMAGE" "$ISO_MOUNTPOINT"
-    mount "$TARGET_PARTITION" "$DEVICE_MOUNTPOINT"
+    mount --read-only --source "$ISO_IMAGE" --target "$ISO_MOUNTPOINT"
+    mount --source "$TARGET_PARTITION" --target "$DEVICE_MOUNTPOINT"
 }
 
 dumpImageToDevice(){
@@ -117,22 +116,18 @@ LABEL windows
   COM32 /boot/syslinux/chain.c32
   APPEND fs ntldr=/bootmgr
 EOF
-    }
-    
-    find_syslinux_modules(){
-        find /usr -name "chain.c32" | grep "/bios/"
-        find /usr -name "libcom32.c32" | grep "/bios/"
-        find /usr -name "libutil.c32" | grep "/bios/"
-        find /usr -name "ldlinux.c32" | grep "/bios/"
-    }
-
-    find_syslinux_mbr(){
-        find /usr -name "mbr.bin" | grep "/syslinux/"
+    } 
+    copy_syslinux_modules(){
+        MODULES="chain.c32 libcom32.c32 libutil.c32 ldlinux.c32"
+        for MODULE in $MODULES
+        do
+            cp "$(find /usr  -name "$MODULE" | grep "/bios/")" -t "$BOOT_DIRECTORY"
+        done
     }
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot/syslinux"
-    dd bs=440 count=1 conv=notrunc if="$(find_syslinux_mbr)" of="$TARGET_DEVICE"
+    extlinux -i "$BOOT_DIRECTORY"
     mkdir -p "$BOOT_DIRECTORY"
-    cp "$(find_syslinux_modules)" -t "$BOOT_DIRECTORY"
+    copy_syslinux_modules 
     generate_config > "$BOOT_DIRECTORY/syslinux.cfg"
 }
 
