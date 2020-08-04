@@ -65,7 +65,7 @@ End of story.
 
 ## Reading order
 
-The code is read from top to bottom, that is why we must to sort our functions this way, our project tells a story and it must be read in the right order. Always put your functions close to each other to avoid unnecessary scroll on the source code.
+The code is read from top to bottom, that is why we must to sort our functions this way, our project tells a story and it must be read in the right direction. Always put your functions close to each other to avoid unnecessary scroll on the source code.
 
 ## Comments
 
@@ -75,9 +75,9 @@ Commented-out codes are the worst thing ever, we don't know if we can remove the
 
 ## Verboseness
 
-Our script follows the Unix philosophy: *Do one thing and do it well*. That is one of the main reasons why the project is not bloated with so many features, the script is also quiet by default in order to sympathize with the Unix philosophy.
+Our script follows the Unix philosophy: *Do one thing and do it well*. That is one of the main reasons why the project is not bloated with many features, the script is also quiet by default in order to sympathize with the Unix philosophy.
 
-When writing code for our project remember to make all programms work quietly, except when the *--verbose* flag is set. Remember you can always use this flag to make the script wordy.
+When writing code for our project remember to make all programms work quietly, except when the *--verbose* flag is set. We will define later a clean way to print messages in our programm.
 
 ## Tabs, indentation and functions size
 
