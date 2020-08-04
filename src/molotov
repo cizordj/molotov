@@ -105,6 +105,7 @@ print_stdout(){
 }
 
 formatTargetDevice(){
+    wipefs --quiet --all "$TARGET_DEVICE"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: dos
 device: $TARGET_DEVICE
