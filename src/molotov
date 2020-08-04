@@ -11,11 +11,12 @@ Usage:
   Optional parameters:
 
   -h, --help                display a help message like this
+  -v, --verbose             turn on verbose output
 
 Mandatory or optional arguments to long options are also mandatory 
 or optional for any corresponding short options.
 
-Report bugs to <github.com/cizordj>
+Report bugs to <https://github.com/cizordj/molotov>
 
 EOF
 exit 0
@@ -23,7 +24,7 @@ exit 0
 
 printVersion(){
     cat << EOF
-Molotov 0.5.2
+Molotov 0.5.5
 
 Copyright (C) Cézar Augusto de Campos
 License: MIT
@@ -34,6 +35,7 @@ exit 0
 handleArguments(){
     test ! $# -gt 0
     THERE_IS_NO_ARGUMENT=$?
+    VERBOSE=1
 
     while true
     do
@@ -49,41 +51,57 @@ handleArguments(){
             TARGET_DEVICE="$1"
         elif [ "$1" = "-V" ] || [ "$1" = "version" ] || [ "$1" = "--version" ]; then
             printVersion
+        elif [ "$1" = "-v" ] || [ "$1" = "verbose" ] || [ "$1" = "--verbose" ]; then
+            VERBOSE=0
         elif [ $# -gt 0 ]; then
-            printf '%s\n' "Unkown option: $1"
-            exit 2
+            print_stderr "Unknown option: $1\n"
+            exit 64
         else
             break
         fi
         shift 1
     done
+
+    if [ ! -e "$ISO_IMAGE" ] || [ -z "$ISO_IMAGE" ]; then
+        print_stderr "Iso image file not found: $ISO_IMAGE\n"
+        exit 66
+    elif [ ! -e "$TARGET_DEVICE" ]; then
+        print_stderr "The specified device was not found: $TARGET_DEVICE\n"
+        exit 67
+    fi
+}
+
+print_stderr(){
+    >&2 printf '%b' "$@"
 }
 
 checkSuperUser(){
     if [ "$(id -u)" -ne 0 ]; then
-        printf '%s\n' "Insufficient permissions..."
-        exit 2
+        print_stderr "Insufficient permissions...\n"
+        exit 68
     fi
 }
 
-checkVariables(){
+
+defineVariables(){
     DEVICE_MOUNTPOINT="/tmp/DEVICE_MOUNTPOINT"
     DISK_LABEL="WINDOWS10"
     ISO_MOUNTPOINT="/tmp/ISO_MOUNTPOINT"
     PARTITION_NUMBER=1
     TARGET_PARTITION="$TARGET_DEVICE$PARTITION_NUMBER"
-    if [ -z "$ISO_IMAGE" ] || [ -z "$TARGET_DEVICE" ]; then
-        printf '%s\n' "Missing arguments..."
-        exit 2
-    elif [ ! -e "$ISO_IMAGE" ] || [ ! -e "$TARGET_DEVICE" ]; then
-        printf '%s\n' "Iso image does not exist or device not found..."
-        exit 2
-    fi
 }
 
 umountDevice(){
+    print_stdout "Umounting device and iso image\n"
     umount -q "$ISO_IMAGE" "$TARGET_DEVICE"*
+    print_stdout "Removing remaining directories\n"
     rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT" 2> /dev/null
+}
+
+print_stdout(){
+    if [ $VERBOSE -eq 0 ]; then
+        printf '%b' "$@"
+    fi
 }
 
 formatTargetDevice(){
@@ -94,17 +112,22 @@ unit: sectors
 sector-size: 512
 $TARGET_PARTITION : start= 2048, type=7, bootable
 EOF
+    print_stdout "Formatting $TARGET_DEVICE with NTFS\n"
     mkfs.ntfs --label "$DISK_LABEL" --fast --quiet "$TARGET_PARTITION"
 }
 
 mountDevice(){ 
+    print_stdout "Mounting device and iso image... "
     mkdir -p "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
     mount --read-only --source "$ISO_IMAGE" --target "$ISO_MOUNTPOINT"
     mount --source "$TARGET_PARTITION" --target "$DEVICE_MOUNTPOINT"
+    print_stdout "[ OK ]\n"
 }
 
 dumpImageToDevice(){
+    print_stdout "Dumping image to $TARGET_DEVICE"
     rsync --recursive "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
+    print_stdout "[ OK ]\n"
 }
 
 makeDeviceBootable(){
@@ -124,19 +147,25 @@ EOF
             cp "$(find /usr  -name "$MODULE" | grep "/bios/")" -t "$BOOT_DIRECTORY"
         done
     }
+    find_syslinux_mbr(){
+        find /usr -name "mbr.bin" | grep "/syslinux/"
+    }
+    print_stdout "Making $TARGET_DEVICE bootable with syslinux\n"
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot/syslinux"
-    extlinux -i "$BOOT_DIRECTORY"
     mkdir -p "$BOOT_DIRECTORY"
+    extlinux --install "$BOOT_DIRECTORY"
+    dd if="$(find_syslinux_mbr)" of="$TARGET_DEVICE" bs=440 count=1 conv=notrunc
     copy_syslinux_modules 
     generate_config > "$BOOT_DIRECTORY/syslinux.cfg"
 }
 
 handleArguments "$@"
 checkSuperUser
-checkVariables
+defineVariables
 umountDevice
 formatTargetDevice
 mountDevice
 dumpImageToDevice
 makeDeviceBootable
 umountDevice
+exit 0
