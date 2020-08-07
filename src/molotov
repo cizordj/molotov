@@ -12,6 +12,7 @@ Usage:
 
   -h, --help                display a help message like this
   -v, --verbose             turn on verbose output
+  -V, --version             print molotov version and exit
 
 Mandatory or optional arguments to long options are also mandatory 
 or optional for any corresponding short options.
