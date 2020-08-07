@@ -83,7 +83,6 @@ checkSuperUser(){
     fi
 }
 
-
 defineVariables(){
     DEVICE_MOUNTPOINT="/tmp/DEVICE_MOUNTPOINT"
     DISK_LABEL="WINDOWS10"
@@ -93,9 +92,9 @@ defineVariables(){
 }
 
 umountDevice(){
-    print_stdout "Umounting device and iso image\n"
+    print_stdout "Umounting device and iso image...\n"
     umount -q "$ISO_IMAGE" "$TARGET_DEVICE"*
-    print_stdout "Removing remaining directories\n"
+    print_stdout "Removing remaining directories...\n"
     rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT" 2> /dev/null
 }
 
@@ -106,6 +105,7 @@ print_stdout(){
 }
 
 formatTargetDevice(){
+    print_stdout "Removing file system signature...\n"
     wipefs --quiet --all "$TARGET_DEVICE"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: dos
@@ -114,26 +114,26 @@ unit: sectors
 sector-size: 512
 $TARGET_PARTITION : start= 2048, type=7, bootable
 EOF
-    print_stdout "Formatting $TARGET_DEVICE with NTFS\n"
+    print_stdout "Formatting $TARGET_DEVICE with NTFS...\n"
     mkfs.ntfs --label "$DISK_LABEL" --fast --quiet "$TARGET_PARTITION"
 }
 
 mountDevice(){ 
-    print_stdout "Mounting device and iso image... "
+    print_stdout "Mounting device and iso image...\n"
     mkdir -p "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
     mount --read-only --source "$ISO_IMAGE" --target "$ISO_MOUNTPOINT"
     mount --source "$TARGET_PARTITION" --target "$DEVICE_MOUNTPOINT"
-    print_stdout "[ OK ]\n"
 }
 
 dumpImageToDevice(){
-    print_stdout "Dumping image to $TARGET_DEVICE"
+    print_stdout "Dumping image to $TARGET_DEVICE... "
     rsync --recursive "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
     print_stdout "[ OK ]\n"
 }
 
 makeDeviceBootable(){
     generate_config(){
+        print_stdout "Generating syslinux.cfg\n"
         cat << EOF
 DEFAULT windows
 SAY Initializing Windows, this might take a while
@@ -146,6 +146,7 @@ EOF
         MODULES="chain.c32 libcom32.c32 libutil.c32 ldlinux.c32"
         for MODULE in $MODULES
         do
+            print_stdout "Copying $MODULE to $BOOT_DIRECTORY\n"
             cp "$(find /usr  -name "$MODULE" | grep "/bios/")" -t "$BOOT_DIRECTORY"
         done
     }
@@ -156,7 +157,7 @@ EOF
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot/syslinux"
     mkdir -p "$BOOT_DIRECTORY"
     extlinux --install "$BOOT_DIRECTORY"
-    dd if="$(find_syslinux_mbr)" of="$TARGET_DEVICE" bs=440 count=1 conv=notrunc
+    dd if="$(find_syslinux_mbr)" of="$TARGET_DEVICE" bs=440 count=1 conv=notrunc status=none
     copy_syslinux_modules 
     generate_config > "$BOOT_DIRECTORY/syslinux.cfg"
 }
