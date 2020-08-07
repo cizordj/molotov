@@ -6,7 +6,7 @@ Usage:
   $(basename "$0") -i <iso-image> -d <device> [OPTIONS]
 
   -i, --iso-image FILE      iso image to be used in the media creation
-  -d, --device              device where the image must be burnt
+  -d, --device DEVICE       device where the image must be burnt
 
   Optional parameters:
 
