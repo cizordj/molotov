@@ -2,7 +2,7 @@
 
 Create a bootable media from a Windows® 10 iso image.
 
-The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. The script contained in this repository is just a backend, sooner or later we'll launch a graphical interface. Only legacy boot is supported by now.
+The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. The script contained in this repository is just a backend, sooner or later we'll launch a graphical interface. Only CSM boot is supported by now.
 
 ## How to use
 
@@ -10,6 +10,8 @@ Download the script in the source folder */src* and run with the necessary argum
 
     ./molotov -i <ISO_IMAGE> -d <DEVICE>
 
-Be careful to choose the right device for burning the image, I am not responsible for data loss.
-
 Read the [wiki](https://github.com/cizordj/molotov/wiki)
+
+## Help wanted
+
+This project needs people to package it for Debian and Fedora, if you are interested please contact me.
