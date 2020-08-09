@@ -12,6 +12,12 @@ Download the script in the source folder */src* and run with the necessary argum
 
 Read the [wiki](https://github.com/cizordj/molotov/wiki)
 
+## Dependencies
+
+For Debian users use this command:
+
+    # apt-get install mount util-linux fdisk ntfs-3g rsync extlinux syslinux-common
+
 ## Help wanted
 
 This project needs people to package it for Debian and Fedora, if you are interested please contact me.
