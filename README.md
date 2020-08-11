@@ -18,6 +18,8 @@ For Debian users use this command:
 
     # apt-get install mount util-linux fdisk ntfs-3g rsync extlinux syslinux-common
 
+Or download the Debian package in the releases' page.
+
 ## Help wanted
 
 This project needs people to package it for Debian and Fedora, if you are interested please contact me.
