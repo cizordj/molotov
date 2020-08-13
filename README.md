@@ -6,18 +6,14 @@ The Molotov project aims to make it easy to create a bootable flash drive for Wi
 
 ## How to use
 
-Download the script in the source folder */src* and run with the necessary arguments:
+It is simple, just run the script with the necessary arguments:
 
     ./molotov -i <ISO_IMAGE> -d <DEVICE>
 
-Read the [wiki](https://github.com/cizordj/molotov/wiki)
+## How to install
 
-## Dependencies
+For convenience for some users, there is a .deb package in the [releases' page](https://github.com/cizordj/molotov/wiki), which requires all necessary dependencies.
 
-For Debian users use this command:
-
-    # apt-get install mount util-linux fdisk ntfs-3g rsync extlinux syslinux-common
-
-## Help wanted
+Read the [wiki](https://github.com/cizordj/molotov/wiki) for more information.
 
 This project needs people to package it for Debian and Fedora, if you are interested please contact me.
