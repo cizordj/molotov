@@ -6,13 +6,15 @@ Usage:
   $(basename "$0") -i <iso-image> -d <device> [OPTIONS]
 
   -i, --iso-image FILE      iso image to be used in the media creation
-  -d, --device DEVICE       device where the image must be burnt
+  -d, --device    DEVICE    device where the image must be burnt
 
   Optional parameters:
 
   -h, --help                display a help message like this
   -v, --verbose             turn on verbose output
   -V, --version             print molotov version and exit
+  -u, --uefi                make an uefi-bootable media
+                            (default is legacy)
 
 Mandatory or optional arguments to long options are also mandatory 
 or optional for any corresponding short options.
@@ -25,7 +27,7 @@ exit 0
 
 printVersion(){
     cat << EOF
-Molotov 0.5.5
+Molotov 0.6.0
 
 Copyright (C) Cézar Augusto de Campos
 License: MIT
@@ -37,6 +39,7 @@ handleArguments(){
     test ! $# -gt 0
     THERE_IS_NO_ARGUMENT=$?
     VERBOSE=1
+    UEFI=1
 
     while true
     do
@@ -50,6 +53,9 @@ handleArguments(){
         elif [ "$1" = "-d" ] || [ "$1" = "device" ] || [ "$1" = "--device" ]; then
             shift 1
             TARGET_DEVICE="$1"
+        elif [ "$1" = "-u" ] || [ "$1" = "uefi" ] || [ "$1" = "--uefi" ]; then
+            UEFI=0
+            print_stdout "Uefi mode enabled\n"
         elif [ "$1" = "-V" ] || [ "$1" = "version" ] || [ "$1" = "--version" ]; then
             printVersion
         elif [ "$1" = "-v" ] || [ "$1" = "verbose" ] || [ "$1" = "--verbose" ]; then
@@ -78,23 +84,15 @@ print_stderr(){
 
 checkSuperUser(){
     if [ "$(id -u)" -ne 0 ]; then
-        print_stderr "Insufficient permissions...\n"
+        print_stderr "Insufficient permissions\n"
         exit 68
     fi
 }
 
-defineVariables(){
-    DEVICE_MOUNTPOINT="/tmp/DEVICE_MOUNTPOINT"
-    DISK_LABEL="WINDOWS10"
-    ISO_MOUNTPOINT="/tmp/ISO_MOUNTPOINT"
-    PARTITION_NUMBER=1
-    TARGET_PARTITION="$TARGET_DEVICE$PARTITION_NUMBER"
-}
-
 umountDevice(){
-    print_stdout "Umounting device and iso image...\n"
+    print_stdout "Umounting $TARGET_DEVICE and $ISO_IMAGE\n"
     umount -q "$ISO_IMAGE" "$TARGET_DEVICE"*
-    print_stdout "Removing remaining directories...\n"
+    print_stdout "Removing $ISO_MOUNTPOINT and $DEVICE_MOUNTPOINT\n"
     rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT" 2> /dev/null
 }
 
@@ -104,8 +102,24 @@ print_stdout(){
     fi
 }
 
-formatTargetDevice(){
-    print_stdout "Removing file system signature...\n"
+formatDeviceForUefi(){
+    print_stdout "Removing file system signature from $TARGET_DEVICE\n"
+    wipefs --quiet --all "$TARGET_DEVICE"
+    sfdisk -q "$TARGET_DEVICE" << EOF
+label: gpt
+device: $TARGET_DEVICE
+unit: sectors
+first-lba: 2048
+sector-size: 512
+
+$TARGET_PARTITION : start= 2048, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B  
+EOF
+    print_stdout "Formatting $TARGET_PARTITION with FAT32\n"
+    mkfs.fat -n "$DISK_LABEL" -F 32 "$TARGET_PARTITION"
+}
+
+formatDeviceForCsm(){
+    print_stdout "Removing file system signature from $TARGET_DEVICE\n"
     wipefs --quiet --all "$TARGET_DEVICE"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: dos
@@ -114,26 +128,25 @@ unit: sectors
 sector-size: 512
 $TARGET_PARTITION : start= 2048, type=7, bootable
 EOF
-    print_stdout "Formatting $TARGET_DEVICE with NTFS...\n"
+    print_stdout "Formatting $TARGET_PARTITION with NTFS\n"
     mkfs.ntfs --label "$DISK_LABEL" --fast --quiet "$TARGET_PARTITION"
 }
 
 mountDevice(){ 
-    print_stdout "Mounting device and iso image...\n"
+    print_stdout "Mounting $TARGET_DEVICE and $ISO_IMAGE\n"
     mkdir -p "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
     mount --read-only --source "$ISO_IMAGE" --target "$ISO_MOUNTPOINT"
     mount --source "$TARGET_PARTITION" --target "$DEVICE_MOUNTPOINT"
 }
 
 dumpImageToDevice(){
-    print_stdout "Dumping image to $TARGET_DEVICE... "
+    print_stdout "Dumping image to $TARGET_PARTITION"
     rsync --recursive "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
-    print_stdout "[ OK ]\n"
+    print_stdout "\t[ OK ]\n"
 }
 
 makeDeviceBootable(){
     generate_config(){
-        print_stdout "Generating syslinux.cfg\n"
         cat << EOF
 DEFAULT windows
 SAY Initializing Windows, this might take a while
@@ -158,17 +171,33 @@ EOF
     mkdir -p "$BOOT_DIRECTORY"
     extlinux --install "$BOOT_DIRECTORY"
     dd if="$(find_syslinux_mbr)" of="$TARGET_DEVICE" bs=440 count=1 conv=notrunc status=none
-    copy_syslinux_modules 
+    print_stdout "Generating syslinux.cfg\n"
     generate_config > "$BOOT_DIRECTORY/syslinux.cfg"
 }
 
 handleArguments "$@"
 checkSuperUser
-defineVariables
+
+DEVICE_MOUNTPOINT="/tmp/DEVICE_MOUNTPOINT"
+DISK_LABEL="WINDOWS10"
+ISO_MOUNTPOINT="/tmp/ISO_MOUNTPOINT"
+PARTITION_NUMBER=1
+TARGET_PARTITION="$TARGET_DEVICE$PARTITION_NUMBER"
+
 umountDevice
-formatTargetDevice
+
+if [ $UEFI -eq 0 ]; then
+    formatDeviceForUefi
+else
+    formatDeviceForCsm
+fi
+
 mountDevice
 dumpImageToDevice
-makeDeviceBootable
+
+if [ $UEFI -eq 1 ]; then
+    makeDeviceBootable
+fi 
+
 umountDevice
 exit 0
