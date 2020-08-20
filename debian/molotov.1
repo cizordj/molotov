@@ -1,0 +1,40 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2020 Cézar Augusto de Campos <cezargaiteiro@protonmail.com>,
+.TH MOLOTOV "1" "August 2020" "Molotov 0.6.0" "User Commands"
+.\" Please adjust this date whenever revising the manpage.
+
+.SH NAME
+molotov \- Create a bootable media from a Windows® 10 iso image.
+.SH SYNOPSIS
+.IP
+molotov \fB\-i\fR <iso\-image> \fB\-d\fR <device> [OPTIONS]
+.SH OPTIONS
+This program follows the usual GNU command line syntax, with long
+options starting with two dashes (--). A summary of options is included below.
+.TP
+\fB\-i\fR, \fB\-\-iso\-image\fR FILE
+iso image to be used in the media creation
+.TP
+\fB\-d\fR, \fB\-\-device\fR DEVICE
+device where the image must be burnt
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+display a help message like this
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+turn on verbose output
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+print molotov version and exit
+.TP
+\fB\-u\fR, \fB\-\-uefi\fR
+make an uefi\-bootable media
+(default is legacy)
+.PP
+Mandatory or optional arguments to long options are also mandatory
+or optional for any corresponding short options.
+.SH "REPORTING BUGS"
+Report bugs to <https://github.com/cizordj/molotov>
+.SH COPYRIGHT
+Copyright \(co Cézar Augusto de Campos
+License: MIT

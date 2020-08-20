@@ -1,0 +1,15 @@
+Source: molotov
+Section: misc
+Priority: optional
+Maintainer: Cézar Augusto de Campos <cezargaiteiro@protonmail.com>
+Build-Depends: debhelper-compat (= 12)
+Standards-Version: 4.5.0
+Homepage: https://github.com/cizordj/molotov
+#Vcs-Browser: https://salsa.debian.org/debian/molotov
+#Vcs-Git: https://salsa.debian.org/debian/molotov.git
+
+Package: molotov
+Architecture: all
+Depends: mount(>= 2.36), util-linux (>= 2.36), fdisk (>= 2.36), ntfs-3g (>= 1:2017.3.23AR.3-3), rsync (>= 3.2.2), extlinux (>= 3:6.04~git20190206.bf6db5b4+dfsg1), syslinux-common (>= 3:6.04~git20190206.bf6db5b4+dfsg1)
+Description: Create a bootable media from a Windows® 10 iso image.
+ The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. 

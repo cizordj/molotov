@@ -1,0 +1,2 @@
+./src/molotov /usr/bin
+./debian/molotov.1 /usr/share/man/man1/
