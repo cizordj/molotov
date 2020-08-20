@@ -16,4 +16,6 @@ To make life easier for some users I made a Debian package in the [releases' pag
 
     mount util-linux fdisk ntfs-3g rsync extlinux syslinux-common
 
-For more information please read the Wiki
+## I need people for testing
+
+This project is in the BETA stage, if you wish to contribute please test the program and give me a feedback. I do not own a computer with UEFI support, for that reason UEFI support will take longer to be stable.
