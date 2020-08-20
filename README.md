@@ -12,8 +12,8 @@ It is simple, just run the script with the necessary arguments:
 
 ## How to install
 
-For convenience for some users, there is a .deb package in the [releases' page](https://github.com/cizordj/molotov/wiki), which requires all necessary dependencies.
+To make life easier for some users I made a Debian package in the [releases' page](https://github.com/cizordj/molotov/wiki) which requires all necessary dependencies before installing. If you still wish to use the version in this repository, then here are the dependencies.
 
-## Help wanted
+    mount util-linux fdisk ntfs-3g rsync extlinux syslinux-common
 
-This project needs people to package it for Debian and Fedora, if you are interested please contact me.
+For more information please read the Wiki
