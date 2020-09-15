@@ -27,7 +27,7 @@ exit 0
 
 printVersion(){
     cat << EOF
-Molotov 0.6.0
+Molotov 0.6.4
 
 Copyright (C) Cézar Augusto de Campos
 License: MIT
@@ -140,9 +140,28 @@ mountDevice(){
 }
 
 dumpImageToDevice(){
+    countFiles(){
+        find "$ISO_MOUNTPOINT" -type f | wc -l
+    }
+    copyFiles(){
+        rsync -vrW --no-compress "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
+    }
+    total=$(countFiles)
+    pointer=1
+
     print_stdout "Dumping image to $TARGET_PARTITION"
-    rsync --recursive "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
-    print_stdout "\t[ OK ]\n"
+
+    copyFiles | while read in
+    do
+        unset in
+        print_stdout "\r$(( pointer * 100 / total))%"
+        pointer=$(( pointer + 1 ))
+        if [ "$pointer" -eq "$total" ]
+        then
+            break
+        fi
+    done
+    print_stdout "\n"
 }
 
 makeDeviceBootable(){
@@ -154,7 +173,7 @@ LABEL windows
   COM32 /boot/syslinux/chain.c32
   APPEND fs ntldr=/bootmgr
 EOF
-    } 
+} 
     copy_syslinux_modules(){
         MODULES="chain.c32 libcom32.c32 libutil.c32 ldlinux.c32"
         for MODULE in $MODULES
