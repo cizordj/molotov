@@ -149,7 +149,7 @@ dumpImageToDevice(){
     total=$(countFiles)
     pointer=1
 
-    printOut "Dumping image to $TARGET_PARTITION"
+    printOut "Dumping image to $TARGET_PARTITION\n"
 
     copyFiles | while read in
     do
