@@ -27,7 +27,7 @@ exit 0
 
 printVersion(){
     cat << EOF
-Molotov 0.6.4
+Molotov 0.6.6
 
 Copyright (C) Cézar Augusto de Campos
 License: MIT
@@ -104,7 +104,7 @@ printOut(){
 
 formatDeviceForUefi(){
     printOut "Removing file system signature from $TARGET_DEVICE\n"
-    wipefs --quiet --all "$TARGET_DEVICE"
+    wipefs -a -q "$TARGET_DEVICE"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: gpt
 device: $TARGET_DEVICE
@@ -112,31 +112,31 @@ unit: sectors
 first-lba: 2048
 sector-size: 512
 
-$TARGET_PARTITION : start= 2048, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B  
+$FIRST_PARTITION : start= 2048, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B
 EOF
-    printOut "Formatting $TARGET_PARTITION with FAT32\n"
-    mkfs.fat -n "$DISK_LABEL" -F 32 "$TARGET_PARTITION"
+    printOut "Formatting $FIRST_PARTITION with FAT32\n"
+    mkfs.fat -n "$DISK_LABEL" -F 32 "$FIRST_PARTITION" || exit 1
 }
 
 formatDeviceForCsm(){
     printOut "Removing file system signature from $TARGET_DEVICE\n"
-    wipefs --quiet --all "$TARGET_DEVICE"
+    wipefs -a -q "$TARGET_DEVICE"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: dos
 device: $TARGET_DEVICE
 unit: sectors
 sector-size: 512
-$TARGET_PARTITION : start= 2048, type=7, bootable
+$FIRST_PARTITION : start= 2048, type=7, bootable
 EOF
-    printOut "Formatting $TARGET_PARTITION with NTFS\n"
-    mkfs.ntfs --label "$DISK_LABEL" --fast --quiet "$TARGET_PARTITION"
+    printOut "Formatting $FIRST_PARTITION with NTFS\n"
+    mkfs.ntfs --label "$DISK_LABEL" --fast --quiet "$FIRST_PARTITION" || exit 1
 }
 
 mountDevice(){ 
     printOut "Mounting $TARGET_DEVICE and $ISO_IMAGE\n"
     mkdir -p "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
     mount --read-only --source "$ISO_IMAGE" --target "$ISO_MOUNTPOINT"
-    mount --source "$TARGET_PARTITION" --target "$DEVICE_MOUNTPOINT"
+    mount --source "$FIRST_PARTITION" --target "$DEVICE_MOUNTPOINT"
 }
 
 dumpImageToDevice(){
@@ -144,12 +144,12 @@ dumpImageToDevice(){
         find "$ISO_MOUNTPOINT" -type f | wc -l
     }
     copyFiles(){
-        rsync -vrW --no-compress "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
+        rsync -vrW --inplace --no-compress "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
     }
     total=$(countFiles)
-    pointer=1
+    pointer=4
 
-    printOut "Dumping image to $TARGET_PARTITION\n"
+    printOut "Dumping image to $FIRST_PARTITION\n"
 
     copyFiles | while read in
     do
@@ -200,8 +200,8 @@ checkSuperUser
 DEVICE_MOUNTPOINT="/tmp/DEVICE_MOUNTPOINT"
 DISK_LABEL="WINDOWS10"
 ISO_MOUNTPOINT="/tmp/ISO_MOUNTPOINT"
-PARTITION_NUMBER=1
-TARGET_PARTITION="$TARGET_DEVICE$PARTITION_NUMBER"
+FIRST_PARTITION="${TARGET_DEVICE}1"
+SECOND_PARTITION="${TARGET_DEVICE}2"
 
 umountDevice
 
