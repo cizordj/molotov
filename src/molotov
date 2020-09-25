@@ -89,7 +89,7 @@ checkSuperUser(){
     fi
 }
 
-umountDevice(){
+umountEverything(){
     printOut "Umounting $TARGET_DEVICE and $ISO_IMAGE\n"
     umount -q "$ISO_IMAGE" "$TARGET_DEVICE"*
     printOut "Removing $ISO_MOUNTPOINT and $DEVICE_MOUNTPOINT\n"
@@ -109,13 +109,15 @@ formatDeviceForUefi(){
 label: gpt
 device: $TARGET_DEVICE
 unit: sectors
-first-lba: 2048
 sector-size: 512
 
-$FIRST_PARTITION : start= 2048, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+$FIRST_PARTITION : start=        2048, size=      524288, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+$SECOND_PARTITION : start=      526336, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
 EOF
     printOut "Formatting $FIRST_PARTITION with FAT32\n"
     mkfs.fat -n "$DISK_LABEL" -F 32 "$FIRST_PARTITION" || exit 1
+    printOut "Formatting $SECOND_PARTITION with NTFS\n"
+    mkfs.ntfs --label "$DISK_LABEL" --quiet --fast "$SECOND_PARTITION" || exit 1
 }
 
 formatDeviceForCsm(){
@@ -132,24 +134,25 @@ EOF
     mkfs.ntfs --label "$DISK_LABEL" --fast --quiet "$FIRST_PARTITION" || exit 1
 }
 
-mountDevice(){ 
-    printOut "Mounting $TARGET_DEVICE and $ISO_IMAGE\n"
-    mkdir -p "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT"
-    mount --read-only --source "$ISO_IMAGE" --target "$ISO_MOUNTPOINT"
-    mount --source "$FIRST_PARTITION" --target "$DEVICE_MOUNTPOINT"
+mountDevice(){
+    printOut "Mounting $1 at $2\n"
+    mkdir -p "$2"
+    mount "$1" "$2"
 }
 
 dumpImageToDevice(){
     countFiles(){
-        find "$ISO_MOUNTPOINT" -type f | wc -l
+        find "$origin" -type f | wc -l
     }
     copyFiles(){
-        rsync -vrW --inplace --no-compress "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
+        rsync -vrW --inplace --no-compress "$origin" "$target"
     }
+    origin="$1"
+    target="$2"
     total=$(countFiles)
     pointer=4
 
-    printOut "Dumping image to $FIRST_PARTITION\n"
+    printOut "Dumping image to $target\n"
 
     copyFiles | while read in
     do
@@ -203,20 +206,16 @@ ISO_MOUNTPOINT="/tmp/ISO_MOUNTPOINT"
 FIRST_PARTITION="${TARGET_DEVICE}1"
 SECOND_PARTITION="${TARGET_DEVICE}2"
 
-umountDevice
+umountEverything
 
 if [ $UEFI -eq 0 ]; then
     formatDeviceForUefi
 else
     formatDeviceForCsm
+    mountDevice $FIRST_PARTITION $DEVICE_MOUNTPOINT
+    mountDevice $ISO_IMAGE $ISO_MOUNTPOINT
+    dumpImageToDevice "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
+    installBootloaderForCsm
+    umountEverything
+    exit 0
 fi
-
-mountDevice
-dumpImageToDevice
-
-if [ $UEFI -eq 1 ]; then
-    makeDeviceBootable
-fi 
-
-umountDevice
-exit 0
