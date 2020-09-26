@@ -167,34 +167,23 @@ dumpImageToDevice(){
     printOut "\n"
 }
 
-makeDeviceBootable(){
+installBootloaderForCsm(){
     generate_config(){
         cat << EOF
-DEFAULT windows
-SAY Initializing Windows, this might take a while
-LABEL windows
-  COM32 /boot/syslinux/chain.c32
-  APPEND fs ntldr=/bootmgr
+GRUB_DEFAULT=0
+GRUB_TIMEOUT=0
+menuentry "windows10" {
+    insmod ntldr
+    insmod ntfs
+    ntldr /bootmgr
+}
 EOF
-} 
-    copy_syslinux_modules(){
-        MODULES="chain.c32 libcom32.c32 libutil.c32 ldlinux.c32"
-        for MODULE in $MODULES
-        do
-            printOut "Copying $MODULE to $BOOT_DIRECTORY\n"
-            cp "$(find /usr  -name "$MODULE" | grep "/bios/")" -t "$BOOT_DIRECTORY"
-        done
-    }
-    find_syslinux_mbr(){
-        find /usr -name "mbr.bin" | grep "/syslinux/"
-    }
-    printOut "Making $TARGET_DEVICE bootable with syslinux\n"
-    BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot/syslinux"
-    mkdir -p "$BOOT_DIRECTORY"
-    extlinux --install "$BOOT_DIRECTORY"
-    dd if="$(find_syslinux_mbr)" of="$TARGET_DEVICE" bs=440 count=1 conv=notrunc status=none
-    printOut "Generating syslinux.cfg\n"
-    generate_config > "$BOOT_DIRECTORY/syslinux.cfg"
+}
+    mkdir -p "$DEVICE_MOUNTPOINT/boot/grub"
+    printOut "Making $TARGET_DEVICE bootable with grub\n"
+    grub-install "$TARGET_DEVICE"
+    printOut "Generating GRUB configuration file\n"
+    generate_config > "$DEVICE_MOUNTPOINT/boot/grub/grub.cfg"
 }
 
 handleArguments "$@"
