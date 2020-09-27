@@ -168,22 +168,28 @@ dumpImageToDevice(){
 }
 
 installBootloaderForCsm(){
+    print_UUID(){
+        blkid -o value -s UUID "$FIRST_PARTITION"
+    }
+
     generate_config(){
         cat << EOF
-GRUB_DEFAULT=0
-GRUB_TIMEOUT=0
-menuentry "windows10" {
-    insmod ntldr
-    insmod ntfs
-    ntldr /bootmgr
+set timeout=0
+menuentry "Windows 10" {
+     insmod ntfs
+     insmod ntldr
+     insmod part_msdos
+     insmod search_fs_uuid
+     search --no-floppy --fs-uuid --set=root $(print_UUID)
+     ntldr /bootmgr
 }
 EOF
 }
-    mkdir -p "$DEVICE_MOUNTPOINT/boot/grub"
-    printOut "Making $TARGET_DEVICE bootable with grub\n"
-    grub-install "$TARGET_DEVICE"
-    printOut "Generating GRUB configuration file\n"
-    generate_config > "$DEVICE_MOUNTPOINT/boot/grub/grub.cfg"
+    BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot"
+    printOut "Installing grub on $TARGET_DEVICE\n"
+    grub-install --boot-directory="$BOOT_DIRECTORY" --removable "$TARGET_DEVICE"
+    printOut "Generating grub configuration file\n"
+    generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
 
 handleArguments "$@"
