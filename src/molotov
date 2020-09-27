@@ -191,6 +191,31 @@ EOF
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
+installBootloaderForUefi(){
+    print_UUID(){
+        blkid -o value -s UUID "$SECOND_PARTITION"
+    }
+
+    generate_config(){
+    cat << EOF
+set timeout=5
+menuentry "Windows 10" {
+    insmod part_gpt
+    insmod chain
+    insmod ntfs
+    insmod search_fs_uuid
+    search --no-floppy --fs-uuid --set=root $(print_UUID)
+    chainloader /bootmgr.efi
+}
+EOF
+    }
+
+    BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot"
+    printOut "Installing grub in the flash drive's EFI partition\n"
+    grub-install --efi-directory="$DEVICE_MOUNTPOINT" --boot-directory="$BOOT_DIRECTORY" --removable
+    printOut "Generating grub configuration file\n"
+    generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
+}
 
 handleArguments "$@"
 checkSuperUser
@@ -205,6 +230,14 @@ umountEverything
 
 if [ $UEFI -eq 0 ]; then
     formatDeviceForUefi
+    mountDevice "$SECOND_PARTITION" "$DEVICE_MOUNTPOINT"
+    mountDevice "$ISO_IMAGE" "$ISO_MOUNTPOINT"
+    dumpImageToDevice "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
+    umountEverything
+    mountDevice "$FIRST_PARTITION" "$DEVICE_MOUNTPOINT"
+    installBootloaderForUefi
+    umountEverything
+    exit 0
 else
     formatDeviceForCsm
     mountDevice "$FIRST_PARTITION" "$DEVICE_MOUNTPOINT"
