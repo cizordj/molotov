@@ -176,12 +176,12 @@ installBootloaderForCsm(){
         cat << EOF
 set timeout=0
 menuentry "Windows 10" {
-     insmod ntfs
-     insmod ntldr
-     insmod part_msdos
-     insmod search_fs_uuid
-     search --no-floppy --fs-uuid --set=root $(print_UUID)
-     ntldr /bootmgr
+    insmod ntfs
+    insmod ntldr
+    insmod part_msdos
+    insmod search_fs_uuid
+    search --no-floppy --fs-uuid --set=root $(print_UUID)
+    ntldr /bootmgr
 }
 EOF
 }
