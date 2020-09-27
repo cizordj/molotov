@@ -207,8 +207,8 @@ if [ $UEFI -eq 0 ]; then
     formatDeviceForUefi
 else
     formatDeviceForCsm
-    mountDevice $FIRST_PARTITION $DEVICE_MOUNTPOINT
-    mountDevice $ISO_IMAGE $ISO_MOUNTPOINT
+    mountDevice "$FIRST_PARTITION" "$DEVICE_MOUNTPOINT"
+    mountDevice "$ISO_IMAGE" "$ISO_MOUNTPOINT"
     dumpImageToDevice "$ISO_MOUNTPOINT/" "$DEVICE_MOUNTPOINT/"
     installBootloaderForCsm
     umountEverything
