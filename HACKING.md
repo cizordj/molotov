@@ -30,7 +30,7 @@ Sub functions must be lower case in order to avoid getting more attention than t
 
 ### Variables naming
 
-Variables' name must be UPPERCASE and separated by underline in case of multiple names.
+Variables' name must be UPPERCASE and separated by underline in case of multiple words.
 
     VARIABLE="value"
     VARIABLE_WITH_ANOTHER_VALUE="another value"
@@ -75,14 +75,14 @@ Commented-out codes are the worst thing ever, we don't know if we can remove the
 
 ### Verbosity
 
-Since our project follows the Unix philosophy it does not print anything in the standard input, thus, it passes a **--quiet** parameter to every program it uses to make it less wordy. All possible errors must be handled in the beginning of the script before the process even start. For the sake of GNU guidelines for CLI applications our project provides a _--verbose_ flag for custom printed messages.
+Since our project follows the Unix philosophy it does not print anything in the standard input, thus, it passes a **--quiet** parameter to every program it uses to make it less wordy. All possible errors must be handled in the beginning of the script before the process starts.
 
-To print anything in the standard output please use the **print_stdout** function, it will direct the message to the right place depending on whether verbose mode is true or false. This function does not break lines, you have to tell it explicitly to do so.
+To print anything in the standard output please use the **printOut** function, it will direct the message to the right place depending on whether verbose flag is set or not. This function does not break lines, you have to tell it explicitly to do so.
 
-    print_stdout "I am a custom message\n"
+    printOut "I am a custom message\n"
 
-For printing error messages or warnings you can use the **print_stderr** function.
+For printing error messages or warnings you can use the **printErr** function.
 
-    print_stderr "I am a warning message\n"
+    printErr "I am a warning message\n"
 
 This function does not obey the verbose flag.
