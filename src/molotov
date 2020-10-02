@@ -172,7 +172,6 @@ installBootloaderForCsm(){
     print_UUID(){
         blkid -o value -s UUID "$FIRST_PARTITION"
     }
-
     generate_config(){
         cat << EOF
 set timeout=0
@@ -196,7 +195,6 @@ installBootloaderForUefi(){
     print_UUID(){
         blkid -o value -s UUID "$SECOND_PARTITION"
     }
-
     generate_config(){
     cat << EOF
 set timeout=5
@@ -213,7 +211,7 @@ EOF
 
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot"
     printOut "Installing grub in the flash drive's EFI partition\n"
-    grub-install --target="x86_64-efi" --efi-directory="$DEVICE_MOUNTPOINT" --boot-directory="$BOOT_DIRECTORY" --removable
+    grub-install --target="x86_64-efi" --efi-directory="$DEVICE_MOUNTPOINT" --boot-directory="$BOOT_DIRECTORY" --removable --no-nvram
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
