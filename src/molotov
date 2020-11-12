@@ -92,7 +92,7 @@ checkSuperUser(){
 
 umountEverything(){
     printOut "Umounting $TARGET_DEVICE and $ISO_IMAGE\n"
-    umount -q "$ISO_IMAGE" "$TARGET_DEVICE"*
+    umount "$ISO_IMAGE" "$TARGET_DEVICE"*
     printOut "Removing $ISO_MOUNTPOINT and $DEVICE_MOUNTPOINT\n"
     rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT" 2> /dev/null
 }
@@ -112,11 +112,11 @@ device: $TARGET_DEVICE
 unit: sectors
 sector-size: 512
 
-$FIRST_PARTITION : start=        2048, size=      524288, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+$FIRST_PARTITION : start=        2048, size=      524288, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
 $SECOND_PARTITION : start=      526336, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
 EOF
     printOut "Formatting $FIRST_PARTITION with FAT32\n"
-    mkfs.fat -n "$DISK_LABEL" -F 32 "$FIRST_PARTITION" || exit 1
+    mkfs.fat -F 32 "$FIRST_PARTITION" || exit 1
     printOut "Formatting $SECOND_PARTITION with NTFS\n"
     mkfs.ntfs --label "$DISK_LABEL" --quiet --fast "$SECOND_PARTITION" || exit 1
 }
@@ -199,19 +199,15 @@ installBootloaderForUefi(){
     cat << EOF
 set timeout=5
 menuentry "Windows 10" {
-    insmod part_gpt
-    insmod chain
-    insmod ntfs
-    insmod search_fs_uuid
-    search --no-floppy --fs-uuid --set=root $(print_UUID)
-    chainloader /bootmgr.efi
+    search --set=root --fs-uuid $(print_UUID) --hint hd0,gpt2
+    chainloader ($root)/efi/microsoft/boot/cdboot.efi
 }
 EOF
     }
 
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot"
     printOut "Installing grub in the flash drive's EFI partition\n"
-    grub-install --target="x86_64-efi" --efi-directory="$DEVICE_MOUNTPOINT" --boot-directory="$BOOT_DIRECTORY" --removable --no-nvram
+    grub-install --target="x86_64-efi" --efi-directory="$DEVICE_MOUNTPOINT" --boot-directory="$BOOT_DIRECTORY" --removable --no-nvram --bootloader-id="GRUB" "$TARGET_DEVICE"
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
