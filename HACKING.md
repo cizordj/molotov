@@ -1,6 +1,6 @@
 # Code guidelines for Molotov project
 
-The project follows the [GNU Coding standards](https://www.gnu.org/prep/standards/standards.html#Command_002dLine-Interfaces) and the Unix philosophy in order to make the application simple, modular and easy to use.
+This project follows the [GNU Coding standards](https://www.gnu.org/prep/standards/standards.html#Command_002dLine-Interfaces) for command-line applications.
 
 In order to keep the code nice and clean we have a few requirements you'll need to stick to in order to get your patch accepted.
 
@@ -67,6 +67,7 @@ Always put your functions close to each other to avoid unnecessary scroll on the
         copy_syslinux_modules
     }
 
+This way the user can see what the program does rather than how it does
 ### Comments
 
 Please do not write comments inside the code, nor comment out pieces of code. Your functions' name must be enough to express your feelings and if you can't do that then you shouldn't be here.
@@ -75,7 +76,7 @@ Commented-out codes are the worst thing ever, we don't know if we can remove the
 
 ### Verbosity
 
-Since our project follows the Unix philosophy it does not print anything in the standard input, thus, it passes a **--quiet** parameter to every program it uses to make it less wordy. All possible errors must be handled in the beginning of the script before the process starts.
+Since our project follows the Unix philosophy it tries not to print anything in the standard output, thus, it passes a **--quiet** parameter to every program it uses to make it less wordy. All possible errors must be handled in the beginning of the script before the process starts.
 
 To print anything in the standard output please use the **printOut** function, it will direct the message to the right place depending on whether verbose flag is set or not. This function does not break lines, you have to tell it explicitly to do so.
 
