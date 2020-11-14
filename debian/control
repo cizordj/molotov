@@ -10,6 +10,6 @@ Homepage: https://github.com/cizordj/molotov
 
 Package: molotov
 Architecture: all
-Depends: mount(>= 2.36), util-linux (>= 2.36), fdisk (>= 2.36), ntfs-3g (>= 1:2017.3.23AR.3-3), rsync (>= 3.2.2), extlinux (>= 3:6.04~git20190206.bf6db5b4+dfsg1), syslinux-common (>= 3:6.04~git20190206.bf6db5b4+dfsg1)
+Depends: dash (= 0.5.10.2), mount(= 2.36), util-linux (= 2.36), fdisk (= 2.36), ntfs-3g (= 1:2017.3.23AR.3-3), dosfstools (= 4.1), grub2-common (= 2.04), grub-efi-amd64-bin (= 2.04)
 Description: Create a bootable media from a Windows® 10 iso image.
- The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. 
+ The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. What you need is a Windows® 10 iso image which can be downloaded from Microsoft's website and a flash drive with at least 8Gb. This program may work in older versions of Windows as well, although it is not supported. 

@@ -10,7 +10,7 @@ It is recommended to install the versions available in the releases page, theses
 
 Dependencies:
 
-    mount util-linux fdisk ntfs-3g rsync grub-efi-amd64-bin 
+    dash mount util-linux fdisk ntfs-3g dosfstools grub2-common grub-efi-amd64-bin
 
 ## How to use
 
