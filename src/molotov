@@ -28,7 +28,7 @@ exit 0
 
 printVersion(){
     cat << EOF
-Molotov 0.6.6
+Molotov 0.6.10
 
 Copyright (C) Cézar Augusto de Campos
 License: MIT
@@ -92,7 +92,7 @@ checkSuperUser(){
 
 umountEverything(){
     printOut "Umounting $TARGET_DEVICE and $ISO_IMAGE\n"
-    umount "$ISO_IMAGE" "$TARGET_DEVICE"*
+    umount -q "$ISO_IMAGE" "$TARGET_DEVICE"*
     printOut "Removing $ISO_MOUNTPOINT and $DEVICE_MOUNTPOINT\n"
     rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT" 2> /dev/null
 }
@@ -105,25 +105,23 @@ printOut(){
 
 formatDeviceForUefi(){
     printOut "Removing file system signature from $TARGET_DEVICE\n"
-    wipefs -a -q "$TARGET_DEVICE"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: gpt
 device: $TARGET_DEVICE
 unit: sectors
 sector-size: 512
 
-$FIRST_PARTITION : start=        2048, size=      524288, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
-$SECOND_PARTITION : start=      526336, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
+$FIRST_PARTITION : start=        2048, size=       63488, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
+$SECOND_PARTITION : start=       65536, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
 EOF
     printOut "Formatting $FIRST_PARTITION with FAT32\n"
-    mkfs.fat -F 32 "$FIRST_PARTITION" || exit 1
+    mkfs.fat "$FIRST_PARTITION" || exit 1
     printOut "Formatting $SECOND_PARTITION with NTFS\n"
     mkfs.ntfs --label "$DISK_LABEL" --quiet --fast "$SECOND_PARTITION" || exit 1
 }
 
 formatDeviceForCsm(){
     printOut "Removing file system signature from $TARGET_DEVICE\n"
-    wipefs -a -q "$TARGET_DEVICE"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: dos
 device: $TARGET_DEVICE
@@ -143,29 +141,29 @@ mountDevice(){
 
 dumpImageToDevice(){
     countFiles(){
-        find "$origin" -type f | wc -l
+        find "$ORIGIN" | wc -l
     }
     copyFiles(){
-        rsync -vrW --inplace --no-compress "$origin" "$target"
+        cp -r -v "$ORIGIN"* "$TARGET"
     }
-    origin="$1"
-    target="$2"
-    total=$(countFiles)
-    pointer=4
+    ORIGIN="$1"
+    TARGET="$2"
+    TOTAL="$(countFiles)"
+    POINTER=0
 
-    printOut "Dumping image to $target\n"
+    printOut "Copying iso contents to $TARGET\n"
 
     copyFiles | while read in
     do
         unset in
-        printOut "\r$(( pointer * 100 / total))%"
-        pointer=$(( pointer + 1 ))
-        if [ "$pointer" -eq "$total" ]
+        printOut "\r$(( POINTER * 100 / TOTAL))%"
+        POINTER=$(( POINTER + 1 ))
+        if [ "$POINTER" -eq "$TOTAL" ]
         then
             break
         fi
     done
-    printOut "\n"
+    printOut "\r100%\n"
 }
 
 installBootloaderForCsm(){
@@ -196,18 +194,18 @@ installBootloaderForUefi(){
         blkid -o value -s UUID "$SECOND_PARTITION"
     }
     generate_config(){
+        ROOT='$root'
     cat << EOF
-set timeout=5
+set timeout=0
 menuentry "Windows 10" {
-    search --set=root --fs-uuid $(print_UUID) --hint hd0,gpt2
-    chainloader ($root)/efi/microsoft/boot/cdboot.efi
+    search --set=root --fs-uuid $(print_UUID)
+    chainloader ($ROOT)/efi/boot/bootx64.efi
 }
 EOF
     }
-
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot"
     printOut "Installing grub in the flash drive's EFI partition\n"
-    grub-install --target="x86_64-efi" --efi-directory="$DEVICE_MOUNTPOINT" --boot-directory="$BOOT_DIRECTORY" --removable --no-nvram --bootloader-id="GRUB" "$TARGET_DEVICE"
+    grub-install  --target="x86_64-efi" --efi-directory="$DEVICE_MOUNTPOINT" --boot-directory="$BOOT_DIRECTORY" --removable --no-nvram --no-uefi-secure-boot
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
