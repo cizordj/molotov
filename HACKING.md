@@ -76,9 +76,9 @@ Commented-out codes are the worst thing ever, we don't know if we can remove the
 
 ### Verbosity
 
-Since our project follows the Unix philosophy it tries not to print anything in the standard output, thus, it passes a **--quiet** parameter to every program it uses to make it less wordy. All possible errors must be handled in the beginning of the script before the process starts.
+Since our project follows the Unix philosophy it tries not to print anything in the standard output, thus, it passes a **--quiet** parameter to every program it uses to make it less wordy. All possible errors must be handled before the process starts.
 
-To print anything in the standard output please use the **printOut** function, it will direct the message to the right place depending on whether verbose flag is set or not. This function does not break lines, you have to tell it explicitly to do so.
+If you want to print anything in the standard output please use the **printOut** function, it will direct the message to the right place depending on whether verbose flag is set or not. This function does not break lines, you have to tell it explicitly to do so.
 
     printOut "I am a custom message\n"
 
