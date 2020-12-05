@@ -2,3 +2,4 @@ debian/.debhelper/
 debian/molotov/
 debian/molotov.substvars
 debian/files
+debian/debhelper-build-stamp
