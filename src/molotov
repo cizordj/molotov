@@ -28,7 +28,7 @@ exit 0
 
 printVersion(){
     cat << EOF
-Molotov 0.6.10
+Molotov 1.0
 
 Copyright (C) Cézar Augusto de Campos
 License: MIT
