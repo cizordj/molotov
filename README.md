@@ -22,4 +22,4 @@ It is simple, just run the script with the necessary arguments:
 
 ## How it works
 
-It is simple, molotov formats the block device, puts the iso contents in there and finally installs a boot-loader capable of booting Windows depeding on what type of boot you selected. Remember, molotov is a non-interactive program, so be extremely careful when passing the block device. It won't ask any questions.
+It is simple too, molotov formats the block device, puts the iso contents in there and finally installs a boot-loader capable of booting Windows depeding on what type of boot you selected. Remember, molotov is a non-interactive program, so be extremely careful when passing the block device. It won't ask any questions.
