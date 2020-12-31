@@ -1,4 +1,4 @@
-### Molotov project
+# Molotov project
 
 Create a bootable media from a Windows® 10 iso image.
 
