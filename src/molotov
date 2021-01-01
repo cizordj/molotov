@@ -1,5 +1,4 @@
 #!/bin/sh
-# Start reading the source code from the bottom
 printHelp(){
     cat << EOF
 Create a bootable media from a Windows® 10 iso image
