@@ -25,7 +25,7 @@ Display the help message
 Turn on verbose output
 .TP
 \fB\-V\fR, \fB\-\-version\fR
-Print molotov version and exit
+Print molotov's version and exit
 .TP
 \fB\-u\fR, \fB\-\-uefi\fR
 Make an uefi\-bootable media
@@ -37,7 +37,13 @@ or optional for any corresponding short options.
 This program has custom exit codes for debugging purposes, a summary is listed bellow.
 .TP
 \fB0\fR
-It means that the script ran successfully
+Success!
+.TP
+\fB1\fR
+Some crucial internal command exited with the status 1, such as mkfs.ntfs or fdisk
+.TP
+\fB2\fR
+Some crucial internal command exited with the status 2, such as mkfs.ntfs or fdisk
 .TP
 \fB64\fR
 Unknown parameter
