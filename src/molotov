@@ -30,7 +30,7 @@ printVersion(){
 Molotov 1.0
 
 Copyright (C) Cézar Augusto de Campos
-License: MIT
+License: GPL-3+
 EOF
 exit 0
 }
