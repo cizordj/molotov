@@ -3,7 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Cézar Augusto de Campos <cezargaiteiro@protonmail.com>
 Build-Depends: debhelper-compat (= 13)
-Standards-Version: 4.5.0
+Standards-Version: 4.5.1
 Rules-Requires-Root: no
 Homepage: https://github.com/cizordj/molotov
 Vcs-Browser: https://salsa.debian.org/debian/molotov
