@@ -2,9 +2,9 @@
 
 Create a bootable media from a Windows® 10 iso image.
 
-The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. The script contained in this repository is just a backend and it works. Sooner or later we'll create a graphical interface with GTK.
+The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation. The script contained in this repository is just a backend and it works.
 
-Now I am pleased to announce that both BIOS and UEFI boot are supported.
+Check the website for useless information: [https://cizordj.github.io/molotov/](https://cizordj.github.io/molotov/)
 
 ## How to install
 
