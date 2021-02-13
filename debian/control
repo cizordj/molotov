@@ -22,7 +22,7 @@ Depends: dash,
  grub-efi-amd64-bin (>= 2.04),
  grub-pc-bin (>= 2.04),
  ${misc:Depends}
-Description: bootable media creator from a Windows 10 image
+Description: Create a bootable media from a Windows 10 iso image
  The Molotov project aims to make it easy to create a bootable flash drive for
  Windows 10 installation. What you need is a Windows® 10 iso image which can be
  downloaded from Microsoft's website and a flash drive with at least 8Gb.
