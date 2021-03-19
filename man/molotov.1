@@ -1,0 +1,72 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2020 Cézar Augusto de Campos <cezargaiteiro@protonmail.com>,
+.TH MOLOTOV "1" "January 2021" "Molotov 1.0" "User Commands"
+.\" Please adjust this date whenever revising the manpage.
+
+.SH NAME
+molotov \- Create a bootable media from a Windows® 10 iso image.
+.SH DESCRIPTION
+Molotov is a command line application that creates a bootable USB drive
+from a Windows 10 iso image, the only things you need to have is a flash drive with
+8 Gigabytes of space and a Windows ISO image which can be downloaded from the
+Microsoft's website. In order to use Molotov you must have root access to your Linux box.
+.SH SYNOPSIS
+.IP
+molotov \fB\-i\fR <iso\-image> \fB\-d\fR <block-device> [OPTIONS]
+.SH OPTIONS
+This program follows the usual GNU command line syntax, with long
+options starting with two dashes (--). A summary of options is included below.
+.TP
+\fB\-i\fR, \fB\-\-iso\-image\fR FILE
+Iso image to be used in the media creation
+.TP
+\fB\-d\fR, \fB\-\-device\fR DEVICE
+Device where the image must be burnt, it must be a block device
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Display the help message
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Turn on verbose output
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Print molotov's version and exit
+.TP
+\fB\-u\fR, \fB\-\-uefi\fR
+Make an uefi\-bootable media
+(default is legacy)
+.PP
+Mandatory or optional arguments to long options are also mandatory
+or optional for any corresponding short options.
+.SH "EXIT CODES"
+This program has custom exit codes for debugging purposes, a summary is listed below.
+.TP
+\fB0\fR
+Success!
+.TP
+\fB1\fR
+Some crucial internal command exited with the status 1, such as mkfs.ntfs or fdisk
+.TP
+\fB2\fR
+Some crucial internal command exited with the status 2, such as mkfs.ntfs or fdisk
+.TP
+\fB64\fR
+Unknown parameter
+.TP
+\fB65\fR
+Missing required arguments, it happens when the user omits either the -i or -d flag
+.TP
+\fB66\fR
+Iso image not found, when the user passes as argument a non-existent ISO image
+.TP
+\fB67\fR
+Block device not found, when the user passes as argument a non-existent device
+.TP
+\fB68\fR
+Insufficient permissions, it happens when the program is not run as root
+.SH "REPORTING BUGS"
+Report bugs to <https://github.com/cizordj/molotov>
+.SH COPYRIGHT
+Copyright \(co Cézar Augusto de Campos
+
+License: GPL-3+
