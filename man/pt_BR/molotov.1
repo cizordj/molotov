@@ -1,0 +1,72 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2020 Cézar Augusto de Campos <cezargaiteiro@protonmail.com>,
+.TH MOLOTOV "1" "Abril de 2021" "Molotov 1.0" "Comandos do usuário"
+.\" Please adjust this date whenever revising the manpage.
+
+.SH NOME
+molotov \- Cria um pendrive bootável a partir de uma imagem iso do Windows® 10.
+.SH DESCRIÇÃO
+Molotov é um programa de linha de comando que cria pen drives inicializáveis a partir de uma imagem
+ISO do Windows 10, as únicas coisas que você precisa ter é um pen drive com pelo menos 8 Gigas de
+espaço e uma imagem do Windows que pode ser baixada do site da Microsoft. Para usar o molotov você
+precisará de permissões de administrador na sua máquina.
+.SH SINOPSE
+.IP
+molotov \fB\-i\fR <imagem\-iso> \fB\-d\fR <dispostivo\-bloco> [OPÇÕES]
+.SH OPÇÕES
+Este programa segue a sintaxe padrão dos programas GNU, com opções longas começando com dois hífens (--).
+Um sumário de opções está incluso abaixo.
+.TP
+\fB\-i\fR, \fB\-\-iso\-image\fR ARQUIVO
+Arquivo de imagem a ser usado na criação da mídia
+.TP
+\fB\-d\fR, \fB\-\-device\fR PEN\-DRIVE
+Dispositivo onde a imagem deve ser gravada, isso deve ser um dispositivo bloco
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Mostrar a mensagem de ajuda
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Ativar saída mais detalhada
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Mostrar a versão e sair
+.TP
+\fB\-u\fR, \fB\-\-uefi\fR
+Criar um pendrive inicializável com suporte a UEFI, por padrão ele cria para BIOS legadas.
+.PP
+Argumentos obrigatórios ou opcionais para opções longas também são obrigatórios ou opcionais
+para qualquer opção curta correspondente.
+.SH "VALORES DE SAÍDA"
+.TP
+\fB0\fR
+Sucesso!
+.TP
+\fB1\fR
+Alguma função interna saiu com o status 1 como mkfs.ntfs ou fdisk
+.TP
+\fB2\fR
+Alguma função interna saiu com o status 2 como mkfs.ntfs ou fdisk
+.TP
+\fB64\fR
+Parâmetro desconhecido
+.TP
+\fB65\fR
+Parâmetros obrigatórios faltando, isso acontece quando o usuário não usa o \-i ou o \-d.
+.TP
+\fB66\fR
+Arquivo de imagem ISO não encontrada, isso acontece quando o usuário passa como argumento
+um arquivo de imagem que não existe.
+.TP
+\fB67\fR
+Dispositivo bloco não encontrado, isso acontece quando o usuário passa como argumento um dispositivo bloco
+que não existe.
+.TP
+\fB68\fR
+Permissões insuficientes, isso acontece quando o programa não é utilizado como sudo ou root.
+.SH "RELATÓRIO DE BUGS"
+Se encontrar algum bug relate para <https://github.com/cizordj/molotov>
+.SH COPYRIGHT
+Copyright \(co Cézar Augusto de Campos
+
+Licença: GPL-3+
