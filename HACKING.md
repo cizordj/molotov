@@ -76,7 +76,8 @@ Commented-out codes are the worst thing ever, we don't know if we can remove the
 
 ### Verbosity
 
-Since our project follows the Unix philosophy it tries not to print anything in the standard output, thus, it passes a **--quiet** parameter to every program it uses to make it less wordy. All possible errors must be handled before the process starts and the programms behavior must to be predictable, that's why we make it silent.
+Since our project follows the Unix philosophy it tries not to print anything in the standard output, thus, it passes a **--quiet** parameter to every program it uses to make it less wordy.
+All possible errors must be handled before the beggining of the process and the programms' behavior must be predictable, that's one of the reasons why we make it silent.
 
 If you need to print anything in the standard output please use the **printOut** function, it will direct the message to the right place depending on whether verbose flag is set or not. This function does not break lines, you have to tell it explicitly to do so.
 
