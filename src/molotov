@@ -156,7 +156,7 @@ dumpImageToDevice(){
 
     printOut "Copying iso contents to $TARGET\n"
 
-    copyFiles | while read in
+    copyFiles | while read -r in
     do
         unset in
         printOut "\r$(( POINTER * 100 / TOTAL))%"
@@ -188,7 +188,11 @@ EOF
 }
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot"
     printOut "Installing grub on $TARGET_DEVICE\n"
-    grub-install --boot-directory="$BOOT_DIRECTORY" --removable --target="i386-pc" "$TARGET_DEVICE" 
+    grub-install \
+        --boot-directory="$BOOT_DIRECTORY" \
+        --removable \
+        --target="i386-pc" \
+        "$TARGET_DEVICE"
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
@@ -197,18 +201,23 @@ installBootloaderForUefi(){
         blkid -o value -s UUID "$SECOND_PARTITION"
     }
     generate_config(){
-        ROOT='$root'
     cat << EOF
 set timeout=0
 menuentry "Windows 10" {
     search --set=root --fs-uuid $(print_UUID)
-    chainloader ($ROOT)/efi/boot/bootx64.efi
+    chainloader (\$root)/efi/boot/bootx64.efi
 }
 EOF
     }
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot"
     printOut "Installing grub in the flash drive's EFI partition\n"
-    grub-install  --target="x86_64-efi" --efi-directory="$DEVICE_MOUNTPOINT" --boot-directory="$BOOT_DIRECTORY" --removable --no-nvram --no-uefi-secure-boot
+    grub-install \
+        --target="x86_64-efi" \
+        --efi-directory="$DEVICE_MOUNTPOINT" \
+        --boot-directory="$BOOT_DIRECTORY" \
+        --removable \
+        --no-nvram \
+        --no-uefi-secure-boot
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
