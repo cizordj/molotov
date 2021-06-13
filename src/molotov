@@ -188,7 +188,7 @@ EOF
 }
     BOOT_DIRECTORY="$DEVICE_MOUNTPOINT/boot"
     printOut "Installing grub on $TARGET_DEVICE\n"
-    grub-install --boot-directory="$BOOT_DIRECTORY" --removable "$TARGET_DEVICE"
+    grub-install --boot-directory="$BOOT_DIRECTORY" --removable --target="i386-pc" "$TARGET_DEVICE" 
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
