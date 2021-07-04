@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Molotov</title>
+    <meta name="description" content="Welcome to the Molotov page, here you'll find a lot of useless information about this project, enjoy it.">
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4.3.2/css/metro.min.css">
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4.3.2/css/metro-colors.min.css">
+  </head>
+  <body class="bg-black fg-white">
+    <header class="text-center">
+      <h1>The Molotov project</h1>
+      <nav>
+        <a class="fg-lightBlue" href="#whatis">What is</a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <a class="fg-lightBlue" href="#installation">How to install</a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <a class="fg-lightBlue" href="#objectives">Objectives</a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <a class="fg-lightBlue" href="#antifeatures">Anti-features</a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <a class="fg-lightBlue" href="#technical">Non-functional requirements</a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <a class="fg-lightBlue" href="#meaning">Why the name Molotov</a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <a class="fg-lightBlue" href="#faq">FAQ</a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <a class="fg-lightBlue" href="#about">About</a>
+      </nav>
+    </header>
+    <main class="container">
+      <h2 id="whatis">What is</h2>
+      <p class="text-just">The Molotov is a command-line program that aims to make it easy for people who
+      want to create a bootable usb drive for Windows 10 installation on Linux. The idea
+      behind this project is to make a program that is easy to maintain and follows the Unix philosophy.</p>
+      <h2 id="installation">How to install</h2>
+      <p class="text-just">Since this program is relatively new it is still not available from any linux distribution's repositories,
+      there is a plan on porting it to Debian, although the people from there rejected my package. The recommended
+      way of installing Molotov is to use the Debian package from my
+      <a class="fg-lightBlue" href="https://github.com/cizordj/molotov/releases">releases' page</a>.</p>
+      <p class="text-just">If you know what you're doing, you can put the script in <code>/usr/bin</code> directory, be careful to
+      use a stable version, in other words, a version that is tagged on github.</p>
+      <h2 id="objectives">Objectives</h2>
+      <p class="text-just">I made this program for computer technicians that use Linux as their primary OS and do not have access
+      to a Windows computer to use <a class="fg-lightBlue" href="https://rufus.ie" target="_blank">Rufus</a> or any similar program,
+      these kind of professionals can use this program to make a bootable flash drive and install the Windows 10
+      on other people's computers. That's the situation that I've been through a lot of times and I always had to
+      switch to Windows in order to do this kind of stuff. Now I don't need it anymore thanks to the Molotov and
+      problably you will not need either.</p>
+      <p class="text-just">Thanks to this program I am learning stuff that might be useful for me in the future and hopefully that stuff
+      might be useful for you too. What I am talking about is:
+      <ul>
+        <li>The Debian packaging system</li>
+        <li>Github workflow</li>
+        <li>Vim text editor</li>
+        <li>POSIX shell</li>
+        <li>How disk partitions work</li>
+        <li>How bootloaders work</li>
+      </ul>
+      Please do not complain about the fact that I am helping people to get out of the Linux because of this program,
+      I made this in the hope that it will be useful.</p>
+      <h2 id="antifeatures">"Anti-features"</h2>
+      <p class="text-just">I will try to explain here why some features will not be available in Molotov. First, since
+      the project follows the Unix philosophy I want to make it simple and to do one thing, only a minimal set
+      of options will be available such as those you would expect in a command-line application. With that being said,
+      the following features won't be available:
+      <ul>
+        <li>Check if USB stick is big enough for the ISO image.</li>
+        <li>Different file systems support.</li>
+        <li>Other Windows version besides 10.</li>
+        <li>Secure boot support.</li>
+        <li>Other boot-loader besides Grub.</li>
+        <li>Custom partition schemes.</li>
+        <li>UEFI+CSM in the same drive</li>
+        <li>Check whether dependencies are installed or not</li>
+      </ul>
+      <p class="text-just">However this is free software, you can customize it according to your needs.</p>
+      <h2 id="technical">Non-functional requirements</h2>
+      <p class="text-just">The project has some technical requirements that I want to explain, first off, always keep the code clean,
+      second off,
+      always keep the code <b>small</b>. The smaller the code the easier to understand, I want people to see the
+      source code and be able to get what's going on, not only that, the project must use the best practices and
+      act like a well behaved command line application.</p>
+      <p class="text-just">The program must follow the <a class="fg-lightBlue" href="https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html" target="_blank">
+        Gnu coding standards</a> and try to be POSIX-compliant, another thing is, despite being a command-line program,
+      molotov must be easy to use and have only few options so the user does not need to scroll down a giant page
+      of a manpage. I know it depends a lot on Linux tools to work but I
+      hope in the future I will be able to port it to BSDs and even Mac, if I ever find a standard Unix disk partitioner.
+      </p>
+      <h2 id="meaning">Why the name Molotov</h2>
+      <p class="text-just">This name was suggested by a <a class="fg-lightBlue" href="https://rafinhavoigt.github.io/sobre/" target="_blank">friend</a>
+      of mine who is a fan of a mexican band called <a class="fg-lightBlue" href="https://www.molotov.mx/" target="_blank">Molotov</a>.
+      Molotov also reminds a wine bottle catching fire which subliminally means that people often give up on Linux
+      because a program does not run on wine and for that reason they get back to Windows.</p>
+      <h2 id="faq">Frequently Asked Questions</h2>
+      <h3>Do you plan to support other versions of Windows?</h3>
+      <p class="text-just">No, according to Microsoft the 10 will be the definitive version of Windows and the other ones will stop receiving
+      support anytime soon, so if you plan to use older versions of Windows, from a security view-point that is a bad
+      idea. However, there are other reasons why molotov doesn't support other versions of Windows and one of them is
+      <em>maintainability</em>, in other words, supporting multiple versions of Windows require a lot of source code and
+      work that we could be using on fixing bugs and improving the program.</p>
+      <p class="text-just">Some users reported that Molotov is capable of creating media from Windows 8 images, however I am not sure
+      if that is going to last because the program always expects it to be the tenth version.</p>
+      <h3>Do you plan to support Linux ISOs?</h3>
+      <p class="text-just">No, Linux isos are often bootable by themselves, they do not need molotov for that. If you need a CLI program
+      stick with the good old <em>dd</em> command.</p>
+      <h3>Will you support multi-boot?</h3>
+      <p class="text-just">I am sorry but no, multi-boot requires a lot of stuff that are out of control for molotov. If
+      you really need
+      that kind of feature I suggest using
+      <a class="fg-lightBlue" href="https://www.ventoy.net/en/index.html" target="_blank">ventoy</a>
+      which also supports booting from Windows images.</p>
+      <h2 id="about">About the project</h2>
+      <p class="text-just">Molotov is licensed under the GPLv3 and its source code can be found
+      <a class="fg-lightBlue" href="https://github.com/cizordj/molotov" target="_blank">here</a>.</p>
+    </main>
+  </body>
+</html>
