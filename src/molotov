@@ -104,7 +104,7 @@ printOut(){
 
 formatDeviceForUefi(){
     printOut "Removing file system signature from $TARGET_DEVICE\n"
-    wipefs -q -a "$TARGET_DEVICE"*
+    wipefs -f -q -a "$TARGET_DEVICE"*
     printOut "Writing new partition table for $TARGET_DEVICE\n"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: gpt
@@ -123,7 +123,7 @@ EOF
 
 formatDeviceForCsm(){
     printOut "Removing file system signature from $TARGET_DEVICE\n"
-    wipefs -q -a "$TARGET_DEVICE"*
+    wipefs -f -q -a "$TARGET_DEVICE"*
     printOut "Writing new partition table for $TARGET_DEVICE\n"
     sfdisk -q "$TARGET_DEVICE" << EOF
 label: dos
