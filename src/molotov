@@ -178,11 +178,16 @@ installBootloaderForCsm(){
 set timeout=0
 menuentry "Windows 10" {
     insmod ntfs
-    insmod ntldr
     insmod part_msdos
-    insmod search_fs_uuid
+    insmod search
+    insmod parttool
+    insmod drivemap
+    insmod ntldr
     search --no-floppy --fs-uuid --set=root $(print_UUID)
+    parttool \${root} hidden-
+    drivemap -s (hd0) \${root}
     ntldr /bootmgr
+    boot
 }
 EOF
 }
@@ -191,7 +196,6 @@ EOF
     grub-install \
         --boot-directory="$BOOT_DIRECTORY" \
         --target="i386-pc" \
-        --install-modules="ntfs ntldr part_msdos search_fs_uuid normal search"
         "$TARGET_DEVICE"
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
