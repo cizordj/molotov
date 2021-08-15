@@ -191,6 +191,7 @@ EOF
     grub-install \
         --boot-directory="$BOOT_DIRECTORY" \
         --target="i386-pc" \
+        --install-modules="ntfs ntldr part_msdos search_fs_uuid"
         "$TARGET_DEVICE"
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
