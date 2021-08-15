@@ -190,7 +190,6 @@ EOF
     printOut "Installing grub on $TARGET_DEVICE\n"
     grub-install \
         --boot-directory="$BOOT_DIRECTORY" \
-        --removable \
         --target="i386-pc" \
         "$TARGET_DEVICE"
     printOut "Generating grub configuration file\n"
