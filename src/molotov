@@ -204,6 +204,8 @@ installBootloaderForUefi(){
     cat << EOF
 set timeout=0
 menuentry "Windows 10" {
+    insmod chain
+    insmod search_fs_uuid
     search --set=root --fs-uuid $(print_UUID)
     chainloader (\$root)/efi/boot/bootx64.efi
 }
@@ -217,7 +219,8 @@ EOF
         --boot-directory="$BOOT_DIRECTORY" \
         --removable \
         --no-nvram \
-        --no-uefi-secure-boot
+        --no-uefi-secure-boot \
+        --install-modules="chain search_fs_uuid"
     printOut "Generating grub configuration file\n"
     generate_config > "$BOOT_DIRECTORY/grub/grub.cfg"
 }
