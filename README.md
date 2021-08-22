@@ -37,3 +37,16 @@ and the reason is because the
 [grub-efi-arm64-bin](https://packages.debian.org/buster/grub-efi-arm64-bin)
 package is not installable on 64 bits versions of Debian. This is a problem
 that could be solved in just one line of code if that package was available.
+
+## Troubleshooting
+Some common problems that people find when they use Molotov
+
+### Black screen with a blinking cursor
+After using molotov to create the flash drive and booting from there, the Windows logo
+shows up and then disappear leaving you with a black screen and a blinking underscore
+on the left. It means that Windows is still booting in the background and it will
+take from 5 to 10 minutes to show the installation screen. This is mostly a hardware
+problem and is not something that molotov can fix, if you have a worn flash drive
+be aware that the transfer speed will be slow and Windows may take forever to boot.
+That is why I recommend you to use a 3.0 usb drive because the Windows will
+boot up faster.
