@@ -14,10 +14,19 @@ install: install-common
 	@install -v -d "$(DESTDIR)$(BINDIR)/" && install -m 0755 -v src/molotov "$(DESTDIR)$(BINDIR)/molotov"
 
 uninstall:
-	@rm -v \
+	@printf 'Removing the files:\n%s\n%s\n%s\n' \
+		"$(DESTDIR)$(BINDIR)/molotov" \
+		"$(DESTDIR)$(BINDIR)/man/molotov.1" \
+		"$(DESTDIR)$(BINDIR)/pt_BR/man1/molotov.1"
+	@rm \
 		"$(DESTDIR)$(BINDIR)/molotov" \
 		"$(DESTDIR)$(MANDIR)/man1/molotov.1" \
 		"$(DESTDIR)$(MANDIR)/pt_BR/man1/molotov.1"
-	@rmdir -v --ignore-fail-on-non-empty -p \
+	@printf 'Removing directories:\n%s\n%s\n%s\n' \
 		"$(DESTDIR)$(MANDIR)/pt_BR/man1/" \
+		"$(DESTDIR)$(MANDIR)/pt_BR/" \
+		"$(DESTDIR)$(MANDIR)/man1/"
+	@rmdir \
+		"$(DESTDIR)$(MANDIR)/pt_BR/man1/" \
+		"$(DESTDIR)$(MANDIR)/pt_BR/" \
 		"$(DESTDIR)$(MANDIR)/man1/"
