@@ -4,7 +4,7 @@ Create a bootable media from a Windows® 10 iso image.
 
 The Molotov project aims to make it easy to create a bootable flash drive for Windows 10 installation.
 
-Check the website for useless information: [https://cizordj.github.io/molotov/](https://cizordj.github.io/molotov/)
+Check the website for useless information: [https://cizordj.codeberg.page/molotov/](https://cizordj.codeberg.page/molotov/)
 
 ## How to install
 
