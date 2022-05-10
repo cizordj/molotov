@@ -16,8 +16,8 @@ install: install-common
 uninstall:
 	@printf 'Removing the files:\n%s\n%s\n%s\n' \
 		"$(DESTDIR)$(BINDIR)/molotov" \
-		"$(DESTDIR)$(BINDIR)/man/molotov.1" \
-		"$(DESTDIR)$(BINDIR)/pt_BR/man1/molotov.1"
+		"$(DESTDIR)$(MANDIR)/man/molotov.1" \
+		"$(DESTDIR)$(MANDIR)/pt_BR/man1/molotov.1"
 	@rm \
 		"$(DESTDIR)$(BINDIR)/molotov" \
 		"$(DESTDIR)$(MANDIR)/man1/molotov.1" \
@@ -26,7 +26,7 @@ uninstall:
 		"$(DESTDIR)$(MANDIR)/pt_BR/man1/" \
 		"$(DESTDIR)$(MANDIR)/pt_BR/" \
 		"$(DESTDIR)$(MANDIR)/man1/"
-	@rmdir \
+	-@rmdir \
 		"$(DESTDIR)$(MANDIR)/pt_BR/man1/" \
 		"$(DESTDIR)$(MANDIR)/pt_BR/" \
 		"$(DESTDIR)$(MANDIR)/man1/"
