@@ -58,10 +58,3 @@ problem and is not something that molotov can fix, if you have a worn flash driv
 be aware that the transfer speed will be slow and Windows may take forever to boot.
 That is why I recommend you to use a 3.0 usb drive because the Windows will
 boot up faster.
-
-## Progress seems stuck at 84%
-When using Molotov in verbose mode, you can track the progress of file
-copying to the USB drive. While most files are copied smoothly, there
-is one significantly larger file that takes more time to copy. As a
-result, the progress percentage may appear to be stuck at 84%. However,
-the process is still ongoing and not actually halted.
