@@ -1,7 +1,7 @@
 #!/bin/sh
 printHelp(){
     cat << EOF
-Create a bootable media from a Windows® iso image
+Create a bootable media from a Windows iso image
 Usage:
   $(basename "$0") -i <iso-image> -d <device> [OPTIONS]
 
@@ -27,7 +27,7 @@ exit 0
 
 printVersion(){
     cat << EOF
-Molotov 1.2.1
+Molotov 1.3
 
 Copyright (C) Cézar Augusto de Campos
 License: GPL-3+
