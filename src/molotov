@@ -1,7 +1,7 @@
 #!/bin/sh
 printHelp(){
     cat << EOF
-Create a bootable media from a Windows® 10 iso image
+Create a bootable media from a Windows® iso image
 Usage:
   $(basename "$0") -i <iso-image> -d <device> [OPTIONS]
 
@@ -143,30 +143,10 @@ mountDevice(){
 }
 
 dumpImageToDevice(){
-    countFiles(){
-        find "$ORIGIN" | wc -l
-    }
-    copyFiles(){
-        cp -r -v "$ORIGIN"* "$TARGET"
-    }
     ORIGIN="$1"
     TARGET="$2"
-    TOTAL="$(countFiles)"
-    POINTER=0
-
     printOut "Copying iso contents to $TARGET\n"
-
-    copyFiles | while read -r in
-    do
-        unset in
-        printOut "\r$(( POINTER * 100 / TOTAL))%"
-        POINTER=$(( POINTER + 1 ))
-        if [ "$POINTER" -eq "$TOTAL" ]
-        then
-            break
-        fi
-    done
-    printOut "\r100%\n"
+    cp -r "$ORIGIN"* "$TARGET"
 }
 
 installBootloaderForCsm(){
