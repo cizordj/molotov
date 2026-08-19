@@ -143,10 +143,41 @@ mountDevice(){
 }
 
 dumpImageToDevice(){
-    ORIGIN="$1"
-    TARGET="$2"
-    printOut "Copying iso contents to $TARGET\n"
-    cp -r "$ORIGIN"* "$TARGET"
+    get_directory_size_in_bytes() {
+        du -sb "$1" | awk '{print $1}'
+    }
+
+    copy_files_with_progress() {
+        SOURCE_DIR="$1"
+        TARGET_DIR="$2"
+        SOURCE_DIR_SIZE="$(get_directory_size_in_bytes "$SOURCE_DIR")"
+        TARGET_DIR_SIZE="$(get_directory_size_in_bytes "$TARGET_DIR")"
+
+        cp -r "$SOURCE_DIR"* "$TARGET_DIR" &
+        COPY_JOB_ID="$!"
+
+        while [ "$TARGET_DIR_SIZE" -ne "$SOURCE_DIR_SIZE" ]
+        do
+            TARGET_DIR_SIZE="$(get_directory_size_in_bytes "$TARGET_DIR")"
+            PROGRESS=$(( 100 * TARGET_DIR_SIZE / SOURCE_DIR_SIZE ))
+            printf \
+                '\rCopying iso contents to %s: %.2f%%' \
+                "$TARGET_DIR" \
+                "$PROGRESS"
+
+            sleep 0.1
+        done
+        printf '\n'
+
+        wait "$COPY_JOB_ID"
+    }
+
+    if [ $VERBOSE -eq 0 ]
+    then
+        copy_files_with_progress "$1" "$2"
+    else
+        cp -r "$1"* "$2"
+    fi
 }
 
 installBootloaderForCsm(){
