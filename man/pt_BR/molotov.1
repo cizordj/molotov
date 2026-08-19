@@ -6,17 +6,23 @@
 .SH NOME
 molotov \- Cria uma mídia inicializável a partir de uma imagem iso do Windows.
 .SH DESCRIÇÃO
-Molotov é um utilitário de linha de comando projetado para criar um
-pen drive inicializável usando uma imagem ISO do Windows. Para usar
-o molotov, você precisará de um dispositivo com espaço suficiente e
-uma imagem ISO do Windows, que pode ser baixada no site da Microsoft.
-Você precisa ter acesso root para realizar a criação da unidade USB.
+Molotov é um utilitário de linha de comando projetado para criar uma
+mídia USB inicializável usando uma imagem ISO do Windows. Para usar
+o molotov você precisará de um dispositivo com espaço suficiente e
+uma imagem do Windows que pode ser baixada diretamente do site
+da Microsoft.
+
+- Você precisa ter acesso root para realizar a criação da unidade USB.
+
+- Tenha em mente que TODOS os dados do seu dispositivo serão apagados!
 
 .SH SINOPSE
 .IP
 molotov \fB\-i\fR <imagem\-iso> \fB\-d\fR <dispostivo\-bloco> [OPÇÕES]
 
-.\" TODO Add an example
+.SH EXEMPLO
+.IP
+molotov \fB\-i\fR Win10_22H2_BrazilianPortuguese_x64v1.iso \fB\-d\fR /dev/sdc -v -u
 
 .SH OPÇÕES
 Este programa segue a sintaxe padrão dos programas GNU, com opções longas começando com dois hífens (--).

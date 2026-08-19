@@ -8,15 +8,20 @@ molotov \- Create a bootable media from a Windows iso image.
 .SH DESCRIPTION
 Molotov is a command line utility designed to create a bootable USB
 drive using a Windows ISO image. To use Molotov, you'll need
-a flash drive with sufficient storage space and a Windows ISO image
+a flash drive with sufficient storage space and a Windows image
 which can be obtained by downloading it from Microsoft's website.
-You need to have root access in order to perform the USB drive creation.
+
+- You need to have root access in order to perform the USB drive creation.
+
+- Bear in mind that ALL data in your device will be deleted!
 
 .SH SYNOPSIS
 .IP
 molotov \fB\-i\fR <iso\-image> \fB\-d\fR <block-device> [OPTIONS]
 
-.\" TODO Add an example
+.SH EXAMPLE
+.IP
+molotov \fB\-i\fR Win10_22H2_BrazilianPortuguese_x64v1.iso \fB\-d\fR /dev/sdc -v -u
 
 .SH OPTIONS
 This program follows the usual GNU command line syntax, with long
