@@ -17,9 +17,9 @@ Use K&R alternative style for the braces.
 Function names must have at least one verb and one noun, besides their names must be camel case, for example:
 
 ```sh
-    formatChosenDevice(){
-      # foo_bar
-    }
+formatChosenDevice(){
+  # foo_bar
+}
 ```
 
 ### Sub Function naming
@@ -27,9 +27,9 @@ Function names must have at least one verb and one noun, besides their names mus
 Sub functions must be lower case in order to avoid getting more attention than the parent function.
 
 ```sh
-    sub_function(){
-        # foo_bar
-    }
+sub_function(){
+    # foo_bar
+}
 ```
 
 ### Variable naming
@@ -37,21 +37,21 @@ Sub functions must be lower case in order to avoid getting more attention than t
 Variables must be UPPERCASE and separated by underline in case of multiple words.
 
 ```sh
-    VARIABLE="value"
-    VARIABLE_WITH_ANOTHER_VALUE="another value"
+VARIABLE="value"
+VARIABLE_WITH_ANOTHER_VALUE="another value"
 ```
 
 When referencing a variable you must use quotes like this:
 
 ```sh
-    mount "$ISO_FILE" "$ISO_MOUNTPOINT"
-    rmdir "$TARGET_DIRECTORY"
+mount "$ISO_FILE" "$ISO_MOUNTPOINT"
+rmdir "$TARGET_DIRECTORY"
 ```
 
 It also applies to sub-function calls:
     
 ```sh
-    MODULES="$(find_specific_modules)"
+MODULES="$(find_specific_modules)"
 ```
 
 Feel free to define constants and strings inside your functions,
@@ -65,22 +65,22 @@ on the source code. The top of the source code must have the functions
 definitions and the bottom must have the function calls. Example:
 
 ```sh
-    makeDeviceBootable(){
-        clean_mbr_partition(){
-            # cleaning
-        }
-        install_extlinux(){
-            # bar
-        }
-        copy_syslinux_modules(){
-            # foo
-        }
-    
-        I_AM_A_STRING="string"
-        clean_mbr_partition
-        install_extlinux
-        copy_syslinux_modules
+makeDeviceBootable(){
+    clean_mbr_partition(){
+        # cleaning
     }
+    install_extlinux(){
+        # bar
+    }
+    copy_syslinux_modules(){
+        # foo
+    }
+
+    I_AM_A_STRING="string"
+    clean_mbr_partition
+    install_extlinux
+    copy_syslinux_modules
+}
 ```
 
 This way the user can read the bottom and see what the program does rather than how it does.
