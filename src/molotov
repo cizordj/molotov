@@ -19,7 +19,7 @@ Usage:
 Mandatory or optional arguments to long options are also mandatory 
 or optional for any corresponding short options.
 
-Report bugs to <https://github.com/cizordj/molotov>
+Report bugs to <https://codeberg.org/cizordj/molotov>
 
 EOF
 exit 0

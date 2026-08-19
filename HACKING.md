@@ -72,7 +72,7 @@ This way the user can see what the program does rather than how it does
 
 Please do not write comments inside the code, nor comment out pieces of code. Your functions' name must be enough to express your feelings and if you can't do that then you shouldn't be here.
 
-Commented-out codes are the worst thing ever, we don't know if we can remove them or if they will be used later. Please don't write Fix-mes or To-dos in the source code, instead, open an issue on GitHub or fork it.
+Commented-out codes are the worst thing ever, we don't know if we can remove them or if they will be used later. Please don't write Fix-mes or To-dos in the source code, instead, open an issue on Codeberg or fork it.
 
 ### Verbosity
 
