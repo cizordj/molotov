@@ -88,7 +88,7 @@ printErr(){
 umountEverything(){
     printOut "Umounting $TARGET_DEVICE and $ISO_IMAGE\n"
     umount -q "$ISO_IMAGE" "$TARGET_DEVICE"*
-    printOut "Removing $ISO_MOUNTPOINT and $DEVICE_MOUNTPOINT\n"
+    printOut "Cleaning folders $ISO_MOUNTPOINT and $DEVICE_MOUNTPOINT\n"
     rmdir "$ISO_MOUNTPOINT" "$DEVICE_MOUNTPOINT" 2> /dev/null
 }
 
