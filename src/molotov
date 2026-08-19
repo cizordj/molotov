@@ -75,18 +75,14 @@ handleArguments(){
     elif [ ! -e "$TARGET_DEVICE" ]; then
         printErr "The specified device was not found: $TARGET_DEVICE\n"
         exit 67
+    elif [ ! -w "$TARGET_DEVICE" ]; then
+        printf "The specified device cannot be written by the current user: $TARGET_DEVICE\n"
+        exit 68
     fi
 }
 
 printErr(){
     >&2 printf '%b' "$@"
-}
-
-checkSuperUser(){
-    if [ "$(id -u)" -ne 0 ]; then
-        printErr "Insufficient permissions\n"
-        exit 68
-    fi
 }
 
 umountEverything(){
@@ -241,7 +237,6 @@ EOF
 }
 
 handleArguments "$@"
-checkSuperUser
 
 DEVICE_MOUNTPOINT="$(mktemp -d -u)"
 DISK_LABEL="WINDOWS10"
