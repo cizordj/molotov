@@ -151,6 +151,7 @@ dumpImageToDevice(){
 
         cp -r "$SOURCE_DIR"* "$TARGET_DIR" &
         COPY_JOB_ID="$!"
+        trap 'kill $COPY_JOB_ID ; exit 0' INT
 
         while [ "$TARGET_DIR_SIZE" -ne "$SOURCE_DIR_SIZE" ]
         do
@@ -166,6 +167,7 @@ dumpImageToDevice(){
         printf '\n'
 
         wait "$COPY_JOB_ID"
+        trap - INT
     }
 
     if [ $VERBOSE -eq 0 ]
