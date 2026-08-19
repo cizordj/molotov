@@ -76,7 +76,7 @@ handleArguments(){
         printErr "The specified device was not found: $TARGET_DEVICE\n"
         exit 67
     elif [ ! -w "$TARGET_DEVICE" ]; then
-        printf "The specified device cannot be written by the current user: $TARGET_DEVICE\n"
+        printErr "The specified device cannot be written by the current user: $TARGET_DEVICE\n"
         exit 68
     fi
 }
