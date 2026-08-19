@@ -1,6 +1,6 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.\" (C) Copyright 2022 Cézar Augusto de Campos <cezargaiteiro+molotov@protonmail.com>,
-.TH MOLOTOV "1" "Maio de 2023" "Molotov 1.3" "Comandos do usuário"
+.\" (C) Copyright 2024 Cézar Augusto de Campos <zkqv+36669@cezarcampos.com.br>,
+.TH MOLOTOV "1" "Março de 2024" "Molotov 1.3" "Comandos do usuário"
 .\" Please adjust this date whenever revising the manpage.
 
 .SH NOME
@@ -10,10 +10,14 @@ Molotov é um utilitário de linha de comando projetado para criar um
 pen drive inicializável usando uma imagem ISO do Windows. Para usar
 o molotov, você precisará de um dispositivo com espaço suficiente e
 uma imagem ISO do Windows, que pode ser baixada no site da Microsoft.
-Você precisa ter acesso root para realizar a criação de unidade USB.
+Você precisa ter acesso root para realizar a criação da unidade USB.
+
 .SH SINOPSE
 .IP
 molotov \fB\-i\fR <imagem\-iso> \fB\-d\fR <dispostivo\-bloco> [OPÇÕES]
+
+.\" TODO Add an example
+
 .SH OPÇÕES
 Este programa segue a sintaxe padrão dos programas GNU, com opções longas começando com dois hífens (--).
 Um sumário de opções está incluso abaixo.
@@ -21,8 +25,8 @@ Um sumário de opções está incluso abaixo.
 \fB\-i\fR, \fB\-\-iso\-image\fR ARQUIVO
 Arquivo de imagem a ser usado na criação da mídia
 .TP
-\fB\-d\fR, \fB\-\-device\fR PEN\-DRIVE
-Dispositivo onde a imagem deve ser gravada, isso deve ser um dispositivo bloco
+\fB\-d\fR, \fB\-\-device\fR DISPOSITIVO DE BLOCO
+Dispositivo onde a imagem deve ser gravada
 .TP
 \fB\-h\fR, \fB\-\-help\fR
 Mostrar a mensagem de ajuda
@@ -34,7 +38,8 @@ Ativar saída mais detalhada
 Mostrar a versão e sair
 .TP
 \fB\-u\fR, \fB\-\-uefi\fR
-Criar um pendrive inicializável com suporte a UEFI, por padrão ele cria para BIOS legadas.
+Criar uma mídia inicializável com suporte a UEFI,
+por padrão o molotov cria para BIOS legadas.
 .PP
 Argumentos obrigatórios ou opcionais para opções longas também são obrigatórios ou opcionais
 para qualquer opção curta correspondente.
@@ -64,7 +69,19 @@ Dispositivo bloco não encontrado, isso acontece quando o usuário passa como ar
 que não existe.
 .TP
 \fB68\fR
-Permissões insuficientes, isso acontece quando o programa não é utilizado como sudo ou root.
+Indica permissões insuficientes para realizar a operação demandada.
+
+Normalmente acontece quando tenta escrever em um dispositivo que requer
+privilégios administrativos (acesso root).
+
+Causas comuns:
+
+- O usuário atual não possui permissões de escritas no dispositivo alvo
+
+- O dispositivo é de propriedade do root
+
+- O usuário não é o root
+
 .SH "RELATÓRIO DE BUGS"
 Se encontrar algum bug relate para <https://codeberg.org/cizordj/molotov>
 .SH COPYRIGHT
