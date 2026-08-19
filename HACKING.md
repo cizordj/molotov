@@ -106,11 +106,15 @@ reasons why we make it silent.
 
 If you need to print anything in the standard output please use the **printOut** function, it will direct the message to the right place depending on whether verbose flag is set or not. This function does not break lines, you have to tell it explicitly to do so.
 
-    printOut "I am a custom message\n"
+```sh
+printOut "I am a custom message\n"
+```
 
 For printing error messages or warnings you can use the **printErr** function.
 
-    printErr "I am a warning message\n"
+```sh
+printErr "I am a warning message\n"
+```
 
 This function does not obey the verbose flag.
 
