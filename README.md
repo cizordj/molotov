@@ -1,5 +1,12 @@
 # Molotov project
 
+> **⚠️ Archived project — no longer maintained**
+>
+> This repository is archived for historical purposes. It is no longer
+> maintained, and no further updates, bug fixes, or security patches
+> should be expected. Use at your own risk, and consider looking for
+> actively maintained alternatives.
+
 Create a bootable media from a Windows® iso image.
 
 The Molotov project aims to make it easy for you to create a bootable
